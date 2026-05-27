@@ -42,6 +42,8 @@ export default function Onboarding() {
     const updateData = { cycle_length: cycleLength, period_length: periodLength, onboarded: true };
     if (avatarUrl) updateData.avatar_url = avatarUrl;
     await base44.auth.updateMe(updateData);
+    // Send welcome email (fire and forget — don't block navigation)
+    base44.functions.invoke('sendWelcomeEmail', {}).catch(() => {});
     setSaving(false);
     navigate('/');
   };
