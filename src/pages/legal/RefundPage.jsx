@@ -20,13 +20,13 @@ export default function RefundPage() {
 
       <div className="space-y-5 text-sm leading-relaxed">
         {[
-          { title: 'Our Guarantee', body: 'We offer a full 10-day money-back guarantee on all FlowCare Premium subscriptions. If you\'re not completely satisfied within 10 days of your purchase, contact us for a full refund — no questions asked.' },
+          { title: 'Our Guarantee', body: 'We offer a full 10-day money-back guarantee on all FlowCare Premium subscriptions. If you are not completely satisfied within 10 days of your purchase, contact us for a full refund — no questions asked.' },
           { title: 'Eligibility', body: 'To be eligible for a refund: (1) Your refund request must be submitted within 10 days of the original purchase date. (2) You must provide your registered email address and order confirmation. (3) Each account is eligible for one refund request.' },
           { title: 'How to Request a Refund', body: 'Email us at refunds@flowcare.app with the subject "Refund Request" and include your registered email, order date, and reason for refund (optional). We will process your refund within 3–7 business days.' },
           { title: 'Processing Time', body: 'Refunds are processed within 3–7 business days. The amount will be credited back to your original payment method. Bank processing times may add 2–5 additional business days depending on your bank.' },
           { title: 'After Refund', body: 'After a refund is processed, your account will revert to the free plan. All your tracked data will remain intact — only premium features will be restricted. You may re-subscribe at any time.' },
           { title: 'Non-Refundable Situations', body: 'Refunds are not available for: (a) requests made after 10 days of purchase, (b) accounts found to have abused multiple refund requests, (c) purchases made through third-party app stores (Apple App Store / Google Play) — please use their respective refund processes.' },
-          { title: 'Contact', body: 'For refund requests and billing questions: refunds@flowcare.app | For urgent support: support@flowcare.app' },
+          { title: 'Contact', body: 'For refund requests and billing questions: support@flowcare.in | For urgent support: support@flowcare.app' },
         ].map((s, i) => (
           <div key={i}>
             <h2 className="font-heading font-bold text-base mb-1">{s.title}</h2>
