@@ -11,7 +11,7 @@ import { useTheme } from '@/lib/ThemeContext';
 import {
   Moon, Sun, GraduationCap, School, CalendarDays, MessageSquare,
   Phone, Plus, Trash2, Shield, FileText, HelpCircle, RefreshCw,
-  ChevronRight, Crown, Bell
+  ChevronRight, Crown, Bell, ArrowLeft
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -47,7 +47,12 @@ export default function SettingsPage() {
 
   return (
     <div className="px-5 pt-6 pb-10 space-y-5">
-      <h1 className="font-heading text-2xl font-bold">Settings</h1>
+      <div className="flex items-center gap-3">
+        <button onClick={() => navigate(-1)} className="w-9 h-9 rounded-full flex items-center justify-center bg-secondary/60 hover:bg-secondary transition-colors">
+          <ArrowLeft className="w-5 h-5 text-foreground" />
+        </button>
+        <h1 className="font-heading text-2xl font-bold">Settings</h1>
+      </div>
 
       {/* Subscription Banner */}
       {!isPremium && (
@@ -73,10 +78,10 @@ export default function SettingsPage() {
         </motion.div>
       )}
       {isPremium && (
-        <Card className="p-4 bg-gradient-to-r from-amber-50 to-yellow-50 border-amber-200">
+        <Card className="p-4 bg-gradient-to-r from-amber-500/10 to-yellow-500/10 border-amber-400/30">
           <div className="flex items-center gap-2">
             <Crown className="w-5 h-5 text-amber-500" />
-            <p className="font-heading font-bold text-amber-700">FlowCare Premium Active 🎉</p>
+            <p className="font-heading font-bold text-amber-500">FlowCare Premium Active 🎉</p>
           </div>
         </Card>
       )}
@@ -215,7 +220,7 @@ function WhatsAppNumbers({ user, onUpdate }) {
   return (
     <div className="space-y-2">
       {numbers.map(n => (
-        <div key={n} className="flex items-center gap-2 p-2 bg-green-50 rounded-xl border border-green-200">
+        <div key={n} className="flex items-center gap-2 p-2 bg-green-500/10 rounded-xl border border-green-500/30">
           <Phone className="w-3.5 h-3.5 text-green-600" />
           <span className="text-sm flex-1">{n}</span>
           <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive/60" onClick={() => removeNumber(n)}>

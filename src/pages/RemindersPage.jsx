@@ -7,7 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Bell, Plus, Trash2, BellRing, Droplets, Moon, Heart, Flower2 } from 'lucide-react';
+import { Bell, Plus, Trash2, BellRing, Droplets, Moon, Heart, Flower2, ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const DEFAULT_REMINDERS = [
   { type: 'pad_change', title: '🩹 Pad Reminder', message: 'Time to change your pad/tampon!', time: '08:00', repeat: 'cycle_based', days_offset: -4 },
@@ -27,15 +28,16 @@ const TYPE_ICONS = {
 };
 
 const TYPE_COLORS = {
-  pad_change: 'bg-pink-50 border-pink-200',
-  water: 'bg-blue-50 border-blue-200',
-  sleep: 'bg-indigo-50 border-indigo-200',
+  pad_change: 'bg-pink-500/10 border-pink-400/30',
+  water: 'bg-blue-500/10 border-blue-400/30',
+  sleep: 'bg-indigo-500/10 border-indigo-400/30',
   period_start: 'bg-primary/5 border-primary/20',
   fertile_window: 'bg-accent/10 border-accent/20',
   custom: 'bg-muted border-border',
 };
 
 export default function RemindersPage() {
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [showAdd, setShowAdd] = useState(false);
   const [newTitle, setNewTitle] = useState('');
@@ -82,9 +84,14 @@ export default function RemindersPage() {
     <div className="px-5 pt-6 pb-8 space-y-5">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="font-heading text-2xl font-bold">Reminders</h1>
-          <p className="text-sm text-muted-foreground">{activeCount} active reminders</p>
+        <div className="flex items-center gap-3">
+          <button onClick={() => navigate(-1)} className="w-9 h-9 rounded-full flex items-center justify-center bg-secondary/60 hover:bg-secondary transition-colors">
+            <ArrowLeft className="w-5 h-5 text-foreground" />
+          </button>
+          <div>
+            <h1 className="font-heading text-2xl font-bold">Reminders</h1>
+            <p className="text-sm text-muted-foreground">{activeCount} active reminders</p>
+          </div>
         </div>
         <Button onClick={() => setShowAdd(!showAdd)} size="sm" className="rounded-xl font-heading font-bold">
           <Plus className="w-4 h-4 mr-1" /> Add

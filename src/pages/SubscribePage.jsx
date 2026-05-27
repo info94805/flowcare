@@ -64,7 +64,8 @@ export default function SubscribePage() {
           </div>
         </motion.div>
         <h1 className="font-heading text-2xl font-bold mb-2">You're Premium! 🎉</h1>
-        <p className="text-muted-foreground mb-6">All FlowCare features are unlocked for you.</p>
+        <p className="text-muted-foreground mb-1">All FlowCare features are unlocked for you.</p>
+        <p className="text-sm font-semibold text-amber-600 mb-6">✨ Lifetime Access — Never expires</p>
         <Link to="/"><Button className="rounded-xl font-heading font-bold px-8">Go to Home</Button></Link>
       </div>
     );

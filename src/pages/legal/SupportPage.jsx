@@ -1,23 +1,24 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { ChevronLeft, HelpCircle, MessageSquare, Mail, RefreshCw, CheckCircle } from 'lucide-react';
+import { ArrowLeft, HelpCircle, Mail, RefreshCw, CheckCircle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
 const FAQS = [
   { q: 'How do I log my period?', a: 'Go to Profile → "Log New Period" and enter the start date of your period. You can also use the Log tab to record daily details.' },
   { q: 'How accurate are cycle predictions?', a: 'Predictions improve the more cycles you track. Initial predictions use your entered average cycle length. After 3+ cycles, FlowCare calculates your personal average.' },
-  { q: 'How do I cancel/get a refund?', a: 'Email refunds@flowcare.app within 10 days of purchase for a full refund. No questions asked.' },
+  { q: 'How do I cancel/get a refund?', a: 'Email support@flowcare.in within 10 days of purchase for a full refund. No questions asked.' },
   { q: 'Is my data private?', a: 'Yes! Your data is private, encrypted, and never shared with third parties. Only you can see your health data.' },
   { q: 'How does Jia AI work?', a: 'Jia is an AI health companion trained on general menstrual health education. She provides informational responses only — not medical advice.' },
   { q: 'What\'s the difference between app modes?', a: 'School mode shows a simplified interface. College mode adds more features. Daily mode is the full experience with all tracking capabilities.' },
 ];
 
 export default function SupportPage() {
+  const navigate = useNavigate();
   const [expanded, setExpanded] = useState(null);
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
@@ -29,7 +30,7 @@ export default function SupportPage() {
     setSending(true);
     const user = await base44.auth.me();
     await base44.integrations.Core.SendEmail({
-      to: 'support@flowcare.app',
+      to: 'support@flowcare.in',
       subject: `[FlowCare Support] ${subject}`,
       body: `From: ${user?.email}\n\n${message}`,
     });
@@ -41,7 +42,9 @@ export default function SupportPage() {
 
   return (
     <div className="px-5 pt-6 pb-10 max-w-2xl mx-auto">
-      <Link to="/settings"><Button variant="ghost" className="-ml-2 mb-4 font-heading"><ChevronLeft className="w-4 h-4 mr-1" />Back</Button></Link>
+      <button onClick={() => navigate(-1)} className="flex items-center gap-2 mb-5 text-foreground font-heading font-semibold">
+        <ArrowLeft className="w-5 h-5" /> Back
+      </button>
       <div className="flex items-center gap-3 mb-6">
         <HelpCircle className="w-6 h-6 text-primary" />
         <h1 className="font-heading text-2xl font-bold">Contact Support</h1>
@@ -53,7 +56,7 @@ export default function SupportPage() {
           <Mail className="w-5 h-5 text-primary" />
           <div>
             <p className="text-xs font-bold">Email</p>
-            <p className="text-xs text-muted-foreground">support@flowcare.app</p>
+            <p className="text-xs text-muted-foreground">support@flowcare.in</p>
           </div>
         </Card>
         <Card className="p-4 flex items-center gap-3">

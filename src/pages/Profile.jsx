@@ -7,7 +7,18 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { Calendar, LogOut, Save, Camera, Crown, Settings } from 'lucide-react';
+import { Calendar, LogOut, Save, Camera, Crown, Settings, Trash2 } from 'lucide-react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { getAverageCycleLength } from '@/lib/cycleUtils';
 import { Link } from 'react-router-dom';
 
@@ -57,6 +68,16 @@ export default function Profile() {
   };
 
   const handleLogout = () => base44.auth.logout('/');
+
+  const handleDeleteAccount = async () => {
+    await base44.entities.CycleLog.list('-start_date', 100).then(logs =>
+      Promise.all(logs.map(l => base44.entities.CycleLog.delete(l.id)))
+    );
+    await base44.entities.DailyLog.list('-date', 500).then(logs =>
+      Promise.all(logs.map(l => base44.entities.DailyLog.delete(l.id)))
+    );
+    base44.auth.logout('/');
+  };
 
   const isPremium = user?.subscription_status === 'active';
 
@@ -166,6 +187,28 @@ export default function Profile() {
       <Button variant="outline" onClick={handleLogout} className="w-full rounded-xl font-heading font-bold text-destructive border-destructive/30">
         <LogOut className="w-4 h-4 mr-2" /> Sign Out
       </Button>
+
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button variant="ghost" className="w-full rounded-xl font-heading font-bold text-destructive/60 hover:text-destructive hover:bg-destructive/5 text-sm">
+            <Trash2 className="w-4 h-4 mr-2" /> Delete Account Permanently
+          </Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Account?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently delete all your cycle logs, daily logs, and account data. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteAccount} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Yes, Delete Everything
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

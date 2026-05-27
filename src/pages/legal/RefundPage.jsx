@@ -1,21 +1,23 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
-import { ChevronLeft, RefreshCw, Check } from 'lucide-react';
+import { ArrowLeft, RefreshCw, Check } from 'lucide-react';
 
 export default function RefundPage() {
+  const navigate = useNavigate();
   return (
     <div className="px-5 pt-6 pb-10 max-w-2xl mx-auto">
-      <Link to="/settings"><Button variant="ghost" className="-ml-2 mb-4 font-heading"><ChevronLeft className="w-4 h-4 mr-1" />Back</Button></Link>
+      <button onClick={() => navigate(-1)} className="flex items-center gap-2 mb-5 text-foreground font-heading font-semibold">
+        <ArrowLeft className="w-5 h-5" /> Back
+      </button>
       <div className="flex items-center gap-3 mb-6">
         <RefreshCw className="w-6 h-6 text-green-500" />
         <h1 className="font-heading text-2xl font-bold">Refund Policy</h1>
       </div>
 
-      <Card className="p-5 bg-gradient-to-br from-green-50 to-emerald-50 border-green-200 mb-6">
-        <p className="text-3xl font-heading font-bold text-green-700 mb-1">10-Day Money-Back</p>
-        <p className="text-sm text-green-600">No questions asked. Your satisfaction is our priority. 💚</p>
+      <Card className="p-5 bg-gradient-to-br from-green-500/10 to-emerald-500/10 border-green-500/30 mb-6">
+        <p className="text-3xl font-heading font-bold text-green-500 mb-1">10-Day Money-Back</p>
+        <p className="text-sm text-green-500/80">No questions asked. Your satisfaction is our priority. 💚</p>
       </Card>
 
       <div className="space-y-5 text-sm leading-relaxed">

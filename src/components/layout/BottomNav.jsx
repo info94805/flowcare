@@ -1,13 +1,12 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, CalendarDays, PenLine, BookOpen, User, Sparkles, BarChart3, Settings } from 'lucide-react';
+import { Home, CalendarDays, PenLine, User, BarChart3 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const navItems = [
   { path: '/', icon: Home, label: 'Home' },
   { path: '/calendar', icon: CalendarDays, label: 'Calendar' },
   { path: '/log', icon: PenLine, label: 'Log' },
-  { path: '/jia', icon: Sparkles, label: 'Jia AI' },
   { path: '/insights', icon: BarChart3, label: 'Insights' },
   { path: '/profile', icon: User, label: 'Profile' },
 ];

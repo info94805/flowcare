@@ -1,12 +1,14 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { ChevronLeft, FileText } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft, FileText } from 'lucide-react';
 
 export default function TermsPage() {
+  const navigate = useNavigate();
   return (
     <div className="px-5 pt-6 pb-10 max-w-2xl mx-auto">
-      <Link to="/settings"><Button variant="ghost" className="-ml-2 mb-4 font-heading"><ChevronLeft className="w-4 h-4 mr-1" />Back</Button></Link>
+      <button onClick={() => navigate(-1)} className="flex items-center gap-2 mb-5 text-foreground font-heading font-semibold">
+        <ArrowLeft className="w-5 h-5" /> Back
+      </button>
       <div className="flex items-center gap-3 mb-6">
         <FileText className="w-6 h-6 text-primary" />
         <h1 className="font-heading text-2xl font-bold">Terms & Conditions</h1>
