@@ -1,0 +1,75 @@
+{
+  "name": "User",
+  "type": "object",
+  "properties": {
+    "role": {
+      "type": "string",
+      "enum": [
+        "admin",
+        "user"
+      ],
+      "default": "user"
+    },
+    "avatar_url": {
+      "type": "string",
+      "description": "Profile photo URL"
+    },
+    "cycle_length": {
+      "type": "number",
+      "default": 28
+    },
+    "period_length": {
+      "type": "number",
+      "default": 5
+    },
+    "onboarded": {
+      "type": "boolean",
+      "default": false
+    },
+    "app_mode": {
+      "type": "string",
+      "enum": [
+        "school",
+        "college",
+        "daily"
+      ],
+      "default": "daily",
+      "description": "School/College/Daily mode"
+    },
+    "subscription_status": {
+      "type": "string",
+      "enum": [
+        "free",
+        "active",
+        "expired"
+      ],
+      "default": "free"
+    },
+    "subscription_country": {
+      "type": "string"
+    },
+    "whatsapp_family": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Family WhatsApp numbers for alerts"
+    },
+    "reminders_enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "pad_reminder_enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "theme": {
+      "type": "string",
+      "enum": [
+        "light",
+        "dark"
+      ],
+      "default": "light"
+    }
+  }
+}

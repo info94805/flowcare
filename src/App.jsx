@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
+import { ThemeProvider } from '@/lib/ThemeContext';
 
 import AppLayout from '@/components/layout/AppLayout';
 import Home from '@/pages/Home';
@@ -13,6 +14,17 @@ import Calendar from '@/pages/Calendar';
 import DailyLogPage from '@/pages/DailyLogPage';
 import Learn from '@/pages/Learn';
 import Profile from '@/pages/Profile';
+import JiaAI from '@/pages/JiaAI';
+import Insights from '@/pages/Insights';
+import RemindersPage from '@/pages/RemindersPage';
+import SettingsPage from '@/pages/SettingsPage';
+import SubscribePage from '@/pages/SubscribePage';
+import PDFReport from '@/pages/PDFReport';
+import PrivacyPage from '@/pages/legal/PrivacyPage';
+import TermsPage from '@/pages/legal/TermsPage';
+import LegalPage from '@/pages/legal/LegalPage';
+import RefundPage from '@/pages/legal/RefundPage';
+import SupportPage from '@/pages/legal/SupportPage';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -29,12 +41,8 @@ const AuthenticatedApp = () => {
   }
 
   if (authError) {
-    if (authError.type === 'user_not_registered') {
-      return <UserNotRegisteredError />;
-    } else if (authError.type === 'auth_required') {
-      navigateToLogin();
-      return null;
-    }
+    if (authError.type === 'user_not_registered') return <UserNotRegisteredError />;
+    if (authError.type === 'auth_required') { navigateToLogin(); return null; }
   }
 
   return (
@@ -45,8 +53,19 @@ const AuthenticatedApp = () => {
         <Route path="/log" element={<DailyLogPage />} />
         <Route path="/learn" element={<Learn />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/jia" element={<JiaAI />} />
+        <Route path="/insights" element={<Insights />} />
+        <Route path="/reminders" element={<RemindersPage />} />
+        <Route path="/settings" element={<SettingsPage />} />
+        <Route path="/report" element={<PDFReport />} />
       </Route>
       <Route path="/onboarding" element={<Onboarding />} />
+      <Route path="/subscribe" element={<SubscribePage />} />
+      <Route path="/privacy" element={<PrivacyPage />} />
+      <Route path="/terms" element={<TermsPage />} />
+      <Route path="/legal" element={<LegalPage />} />
+      <Route path="/refund" element={<RefundPage />} />
+      <Route path="/support" element={<SupportPage />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
@@ -54,15 +73,17 @@ const AuthenticatedApp = () => {
 
 function App() {
   return (
-    <AuthProvider>
-      <QueryClientProvider client={queryClientInstance}>
-        <Router>
-          <AuthenticatedApp />
-        </Router>
-        <Toaster />
-      </QueryClientProvider>
-    </AuthProvider>
-  )
+    <ThemeProvider>
+      <AuthProvider>
+        <QueryClientProvider client={queryClientInstance}>
+          <Router>
+            <AuthenticatedApp />
+          </Router>
+          <Toaster />
+        </QueryClientProvider>
+      </AuthProvider>
+    </ThemeProvider>
+  );
 }
 
-export default App
+export default App;

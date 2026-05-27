@@ -1,0 +1,51 @@
+{
+  "name": "Reminder",
+  "type": "object",
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": [
+        "period_start",
+        "pad_change",
+        "water",
+        "sleep",
+        "custom",
+        "fertile_window",
+        "ovulation"
+      ],
+      "description": "Type of reminder"
+    },
+    "title": {
+      "type": "string"
+    },
+    "message": {
+      "type": "string"
+    },
+    "time": {
+      "type": "string",
+      "description": "HH:MM format"
+    },
+    "days_offset": {
+      "type": "number",
+      "description": "Days before period to trigger"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "repeat": {
+      "type": "string",
+      "enum": [
+        "daily",
+        "weekly",
+        "cycle_based",
+        "once"
+      ],
+      "default": "daily"
+    }
+  },
+  "required": [
+    "type",
+    "title"
+  ]
+}
