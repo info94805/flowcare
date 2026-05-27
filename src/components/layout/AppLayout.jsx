@@ -16,10 +16,10 @@ export default function AppLayout() {
       {!hideJia && (
         <Link
           to="/jia"
-          className="fixed bottom-24 right-4 z-50 w-14 h-14 rounded-full bg-gradient-to-br from-primary to-accent shadow-lg flex items-center justify-center hover:scale-110 active:scale-95 transition-transform"
+          className="fixed bottom-24 right-4 z-50 w-12 h-12 rounded-full bg-gradient-to-br from-primary to-accent shadow-lg flex items-center justify-center hover:scale-110 active:scale-95 transition-transform"
           title="Chat with Jia"
         >
-          <Sparkles className="w-6 h-6 text-white" />
+          <Sparkles className="w-4 h-4 text-white" />
         </Link>
       )}
     </div>
