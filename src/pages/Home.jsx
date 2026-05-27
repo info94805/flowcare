@@ -26,6 +26,11 @@ export default function Home() {
     setShowSplash(false);
   };
 
+  const resetSplash = () => {
+    localStorage.removeItem('flowcare_splash_seen');
+    setShowSplash(true);
+  };
+
   useEffect(() => {
     base44.auth.me().then(setUser);
   }, []);
@@ -75,9 +80,12 @@ export default function Home() {
             {format(new Date(), 'EEEE, MMMM d')}
           </p>
         </div>
-        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+        <button 
+          onClick={resetSplash}
+          className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center hover:bg-primary/20 transition-colors"
+        >
           <Flower2 className="w-5 h-5 text-primary" />
-        </div>
+        </button>
       </motion.div>
 
       {/* Cycle Ring */}
