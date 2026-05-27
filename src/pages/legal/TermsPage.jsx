@@ -23,7 +23,7 @@ export default function TermsPage() {
           { title: '7. Intellectual Property', body: 'All content, design, features, and functionality of FlowCare are owned by FlowCare and protected by intellectual property laws. You may not reproduce or distribute any part of the App without written permission.' },
           { title: '8. Termination', body: 'We reserve the right to suspend or terminate accounts that violate these Terms. You may delete your account at any time through the app settings or by contacting support.' },
           { title: '9. Changes to Terms', body: 'We may update these Terms periodically. Continued use of the App after changes constitutes acceptance of the new Terms. We will notify users of significant changes.' },
-          { title: '10. Contact', body: 'Questions about these Terms? Contact us at legal@flowcare.app' },
+          { title: '10. Contact', body: 'Questions about these Terms? Contact us at support@flowcare.in' },
         ].map((s, i) => (
           <div key={i}>
             <h2 className="font-heading font-bold text-base mb-1">{s.title}</h2>
