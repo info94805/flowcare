@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import { Flower2 } from 'lucide-react';
 import CycleRing from '@/components/home/CycleRing';
+import SplashScreen from '@/components/SplashScreen';
 import QuickLog from '@/components/home/QuickLog';
 import TipCard from '@/components/home/TipCard';
 import { calculateCycleDay, daysUntilNextPeriod, getAverageCycleLength, getPhaseInfo, getCyclePhase } from '@/lib/cycleUtils';
@@ -15,6 +16,15 @@ import { DAILY_TIPS } from '@/lib/articles';
 export default function Home() {
   const [user, setUser] = useState(null);
   const queryClient = useQueryClient();
+  const [showSplash, setShowSplash] = useState(() => {
+    const seen = localStorage.getItem('flowcare_splash_seen');
+    return !seen;
+  });
+
+  const handleSplashDone = () => {
+    localStorage.setItem('flowcare_splash_seen', '1');
+    setShowSplash(false);
+  };
 
   useEffect(() => {
     base44.auth.me().then(setUser);
@@ -46,8 +56,12 @@ export default function Home() {
   const hasSetup = cycleLogs.length > 0;
 
   return (
+    <>
+    <AnimatePresence>
+      {showSplash && <SplashScreen onDone={handleSplashDone} />}
+    </AnimatePresence>
     <div className="px-5 pt-6 space-y-5">
-      {/* Header */}
+      {/* Header — content below splash */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -123,5 +137,6 @@ export default function Home() {
       {/* Daily Tip */}
       <TipCard tip={dailyTip} />
     </div>
+    </>
   );
 }
