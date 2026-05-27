@@ -21,7 +21,7 @@ export default function PrivacyPage() {
           { title: '5. Children & Minors', body: 'FlowCare is designed for users aged 13 and above. Users under 18 are encouraged to use the app with parental awareness. We comply with applicable laws regarding minors\' data protection.' },
           { title: '6. Data Deletion', body: 'You may request complete deletion of your account and all associated data at any time by contacting support@flowcare.app. All data will be permanently deleted within 30 days of your request.' },
           { title: '7. Third-Party Services', body: 'FlowCare uses secure cloud infrastructure. We do not integrate with third-party advertising networks. Any AI features process queries without storing personally identifiable information beyond your session.' },
-          { title: '8. Contact Us', body: 'For privacy concerns, contact us at privacy@flowcare.app or use the Contact Support option in settings.' },
+          { title: '8. Contact Us', body: 'For privacy concerns, contact us at Support@flowcare.in or use the Contact Support option in settings.' },
         ].map((s, i) => (
           <div key={i}>
             <h2 className="font-heading font-bold text-base mb-1">{s.title}</h2>
