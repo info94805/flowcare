@@ -29,11 +29,8 @@ export default function SupportPage() {
     if (!subject || !message) return;
     setSending(true);
     const user = await base44.auth.me();
-    await base44.integrations.Core.SendEmail({
-      to: 'support@flowcare.in',
-      subject: `[FlowCare Support] ${subject}`,
-      body: `From: ${user?.email}\n\n${message}`,
-    });
+    const mailtoLink = `mailto:support@flowcare.in?subject=${encodeURIComponent('[FlowCare Support] ' + subject)}&body=${encodeURIComponent('From: ' + (user?.email || '') + '\n\n' + message)}`;
+    window.open(mailtoLink, '_blank');
     setSending(false);
     setSent(true);
     setSubject('');
