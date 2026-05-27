@@ -1,0 +1,31 @@
+{
+  "name": "CycleLog",
+  "type": "object",
+  "properties": {
+    "start_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Start date of the period"
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date",
+      "description": "End date of the period"
+    },
+    "cycle_length": {
+      "type": "number",
+      "description": "Length of this cycle in days"
+    },
+    "period_length": {
+      "type": "number",
+      "description": "Duration of period bleeding in days"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Optional notes about this cycle"
+    }
+  },
+  "required": [
+    "start_date"
+  ]
+}

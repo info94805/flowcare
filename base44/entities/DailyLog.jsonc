@@ -1,0 +1,59 @@
+{
+  "name": "DailyLog",
+  "type": "object",
+  "properties": {
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "The date of this log entry"
+    },
+    "mood": {
+      "type": "string",
+      "enum": [
+        "happy",
+        "calm",
+        "sad",
+        "anxious",
+        "irritable",
+        "energetic",
+        "tired",
+        "emotional"
+      ],
+      "description": "Mood for the day"
+    },
+    "flow_intensity": {
+      "type": "string",
+      "enum": [
+        "none",
+        "spotting",
+        "light",
+        "medium",
+        "heavy"
+      ],
+      "default": "none",
+      "description": "Flow intensity"
+    },
+    "symptoms": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of symptoms experienced"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Personal notes"
+    },
+    "water_intake": {
+      "type": "number",
+      "description": "Glasses of water consumed"
+    },
+    "sleep_hours": {
+      "type": "number",
+      "description": "Hours of sleep"
+    }
+  },
+  "required": [
+    "date"
+  ]
+}
