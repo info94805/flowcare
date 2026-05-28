@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { ArrowLeft, HelpCircle, Mail, RefreshCw, CheckCircle } from 'lucide-react';
+import { ArrowLeft, HelpCircle, Mail, RefreshCw, CheckCircle, Loader2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
 const FAQS = [
@@ -28,13 +28,30 @@ export default function SupportPage() {
   const sendMessage = async () => {
     if (!subject || !message) return;
     setSending(true);
-    const user = await base44.auth.me();
-    const mailtoLink = `mailto:support@flowcare.in?subject=${encodeURIComponent('[FlowCare Support] ' + subject)}&body=${encodeURIComponent('From: ' + (user?.email || '') + '\n\n' + message)}`;
-    window.open(mailtoLink, '_blank');
+    try {
+      const res = await base44.functions.invoke('sendSupportEmail', { subject, message });
+      if (res.data?.success) {
+        setSent(true);
+        setSubject('');
+        setMessage('');
+      } else {
+        // Fallback to mailto if backend fails
+        const user = await base44.auth.me();
+        const mailtoLink = `mailto:support@flowcare.in?subject=${encodeURIComponent('[FlowCare Support] ' + subject)}&body=${encodeURIComponent('From: ' + (user?.email || '') + '\n\n' + message)}`;
+        window.open(mailtoLink, '_blank');
+        setSent(true);
+        setSubject('');
+        setMessage('');
+      }
+    } catch {
+      const user = await base44.auth.me();
+      const mailtoLink = `mailto:support@flowcare.in?subject=${encodeURIComponent('[FlowCare Support] ' + subject)}&body=${encodeURIComponent('From: ' + (user?.email || '') + '\n\n' + message)}`;
+      window.open(mailtoLink, '_blank');
+      setSent(true);
+      setSubject('');
+      setMessage('');
+    }
     setSending(false);
-    setSent(true);
-    setSubject('');
-    setMessage('');
   };
 
   return (
@@ -106,7 +123,9 @@ export default function SupportPage() {
             <Textarea value={message} onChange={e => setMessage(e.target.value)} placeholder="Describe your issue or question..." className="mt-1 rounded-xl resize-none" rows={4} />
           </div>
           <Button onClick={sendMessage} disabled={!subject || !message || sending} className="w-full rounded-xl font-heading font-bold">
-            {sending ? 'Sending...' : 'Send Message'}
+            {sending ? (
+              <span className="flex items-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Sending...</span>
+            ) : 'Send Message'}
           </Button>
         </Card>
       )}

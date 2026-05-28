@@ -5,10 +5,10 @@ import { motion } from 'framer-motion';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { FileText, Download, Sparkles, Crown, Loader2, CheckCircle } from 'lucide-react';
+import { FileText, Download, Sparkles, Loader2, CheckCircle } from 'lucide-react';
 import { getAverageCycleLength, MOODS, SYMPTOMS_LIST } from '@/lib/cycleUtils';
 import { format, parseISO, subDays } from 'date-fns';
-import { Link } from 'react-router-dom';
+
 
 export default function PDFReport() {
   const [user, setUser] = useState(null);
@@ -36,7 +36,6 @@ export default function PDFReport() {
   const topMoodLabel = topMood ? (MOODS.find(m => m.id === topMood[0])?.label || topMood[0]) : 'N/A';
 
   const generateReport = async () => {
-    if (!isPremium) return;
     setGenerating(true);
     setReport(null);
 
@@ -61,7 +60,7 @@ export default function PDFReport() {
          - Encouragement and positive affirmations
          Keep it warm, supportive, age-appropriate, and empowering. Use some emojis. End with a reminder to see a doctor if she has concerns.`;
 
-    const content = await base44.integrations.Core.InvokeLLM({ prompt, model: 'claude_sonnet_4_6' });
+    const content = await base44.integrations.Core.InvokeLLM({ prompt });
     setReport({ content, generatedAt: new Date().toISOString(), type: reportType });
     setGenerating(false);
   };
@@ -78,21 +77,6 @@ export default function PDFReport() {
     a.click();
     URL.revokeObjectURL(url);
   };
-
-  if (!isPremium) {
-    return (
-      <div className="px-5 pt-12 pb-8 flex flex-col items-center text-center">
-        <Crown className="w-12 h-12 text-primary mb-4" />
-        <h1 className="font-heading text-xl font-bold mb-2">AI Health Reports</h1>
-        <p className="text-sm text-muted-foreground mb-6 max-w-xs">
-          Generate beautiful AI health reports for yourself and your doctor. Premium feature.
-        </p>
-        <Link to="/subscribe">
-          <Button className="rounded-xl font-heading font-bold px-8">Upgrade to Premium</Button>
-        </Link>
-      </div>
-    );
-  }
 
   return (
     <div className="px-5 pt-6 pb-10 space-y-5">

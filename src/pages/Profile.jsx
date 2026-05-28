@@ -20,7 +20,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { getAverageCycleLength } from '@/lib/cycleUtils';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function Profile() {
   const queryClient = useQueryClient();
@@ -173,7 +173,7 @@ export default function Profile() {
       {/* Log Period */}
       <Card className="p-5 space-y-3">
         <h3 className="font-heading font-bold">🌺 Log New Period</h3>
-        <LogPeriodForm onLogged={() => queryClient.invalidateQueries({ queryKey: ['cycleLogs'] })} />
+        <LogPeriodForm onLogged={() => queryClient.invalidateQueries({ queryKey: ['cycleLogs'] })} user={user} />
       </Card>
 
       <Separator />
@@ -213,21 +213,53 @@ export default function Profile() {
   );
 }
 
-function LogPeriodForm({ onLogged }) {
+function LogPeriodForm({ onLogged, user }) {
   const [startDate, setStartDate] = useState('');
   const [saving, setSaving] = useState(false);
+  const [whatsappSent, setWhatsappSent] = useState(false);
+
   const handleLog = async () => {
     if (!startDate) return;
     setSaving(true);
     await base44.entities.CycleLog.create({ start_date: startDate });
+
+    // Send WhatsApp alert to parent/family contacts if configured
+    const numbers = user?.whatsapp_family || [];
+    if (numbers.length > 0) {
+      try {
+        const res = await base44.functions.invoke('sendWhatsAppAlert', { numbers });
+        if (res.data?.links?.length > 0) {
+          // Open WhatsApp link for first number
+          window.open(res.data.links[0].link, '_blank');
+          setWhatsappSent(true);
+          setTimeout(() => setWhatsappSent(false), 4000);
+        }
+      } catch (e) {
+        // WhatsApp alert optional, don't block logging
+      }
+    }
+
     onLogged?.();
     setStartDate('');
     setSaving(false);
   };
+
   return (
-    <div className="flex gap-2">
-      <Input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} className="rounded-xl flex-1" max={new Date().toISOString().split('T')[0]} />
-      <Button onClick={handleLog} disabled={!startDate || saving} className="rounded-xl font-heading font-bold">{saving ? '...' : 'Log'}</Button>
+    <div className="space-y-2">
+      <div className="flex gap-2">
+        <Input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} className="rounded-xl flex-1" max={new Date().toISOString().split('T')[0]} />
+        <Button onClick={handleLog} disabled={!startDate || saving} className="rounded-xl font-heading font-bold">{saving ? '...' : 'Log'}</Button>
+      </div>
+      {whatsappSent && (
+        <p className="text-xs text-green-600 font-semibold flex items-center gap-1">
+          📱 WhatsApp alert sent to your parent/family!
+        </p>
+      )}
+      {(user?.whatsapp_family || []).length === 0 && (
+        <p className="text-xs text-muted-foreground">
+          💡 Add a parent contact in <Link to="/settings" className="text-primary underline">Settings</Link> to auto-alert on period start.
+        </p>
+      )}
     </div>
   );
 }

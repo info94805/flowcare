@@ -9,7 +9,8 @@ import {
   format, startOfMonth, endOfMonth, startOfWeek, endOfWeek,
   addDays, addMonths, subMonths, isSameMonth, isSameDay, parseISO, isWithinInterval
 } from 'date-fns';
-import { getAverageCycleLength, isOnPeriod, getFertileWindow, getOvulationDate } from '@/lib/cycleUtils';
+import { getAverageCycleLength, isOnPeriod, getFertileWindow, getOvulationDate, getCyclePhase } from '@/lib/cycleUtils';
+import { DAILY_TIPS } from '@/lib/articles';
 
 const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -147,6 +148,27 @@ export default function Calendar() {
           <span className="text-muted-foreground">Ovulation</span>
         </div>
       </div>
+
+      {/* Health Tips */}
+      <div>
+        <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide mb-3">Health Tips</p>
+        <div className="space-y-2">
+          {DAILY_TIPS.slice(0, 5).map((tip, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: i * 0.07 }}
+              className="flex items-start gap-3 bg-card border border-border/50 rounded-2xl p-3 shadow-sm"
+            >
+              <span className="text-lg flex-shrink-0">{tip.split(' ')[0]}</span>
+              <p className="text-xs text-foreground font-medium leading-relaxed">{tip.slice(tip.indexOf(' ') + 1)}</p>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+
+      <div className="pb-4" />
     </div>
   );
 }

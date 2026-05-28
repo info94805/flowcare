@@ -128,19 +128,14 @@ export default function SettingsPage() {
       <Card className="p-5 space-y-3">
         <div className="flex items-center justify-between">
           <h3 className="font-heading font-bold flex items-center gap-2">
-            <MessageSquare className="w-4 h-4 text-green-500" /> WhatsApp Alerts
+            <MessageSquare className="w-4 h-4 text-green-500" /> Parent / Family WhatsApp Alert
           </h3>
-          {isPremium && (
-            <Button size="sm" variant="outline" className="rounded-xl text-xs" onClick={() => setShowWhatsApp(true)}>
-              <Plus className="w-3 h-3 mr-1" /> Add
-            </Button>
-          )}
+          <Button size="sm" variant="outline" className="rounded-xl text-xs" onClick={() => setShowWhatsApp(true)}>
+            <Plus className="w-3 h-3 mr-1" /> Add
+          </Button>
         </div>
-        {!isPremium ? (
-          <p className="text-xs text-muted-foreground">Premium feature — Upgrade to send period start alerts to family members via WhatsApp.</p>
-        ) : (
-          <WhatsAppNumbers user={user} onUpdate={() => base44.auth.me().then(setUser)} />
-        )}
+        <p className="text-xs text-muted-foreground">When you log your period, a WhatsApp message will be opened to notify your parent/guardian automatically.</p>
+        <WhatsAppNumbers user={user} onUpdate={() => base44.auth.me().then(setUser)} />
       </Card>
 
       {/* Reminders */}
