@@ -14,6 +14,7 @@ import InsightsButton from '@/components/home/InsightsButton';
 import { calculateCycleDay, daysUntilNextPeriod, getAverageCycleLength } from '@/lib/cycleUtils';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
+import { Copyright } from 'lucide-react';
 
 export default function Home() {
   const [user, setUser] = useState(null);
@@ -150,6 +151,19 @@ export default function Home() {
             )}
           </>
         )}
+
+        {/* Footer - Privacy & Legal */}
+        <div className="text-center py-4 border-t border-border/30 mt-8">
+          <div className="flex items-center justify-center gap-1 text-xs text-muted-foreground">
+            <Copyright className="w-3 h-3" />
+            <span>2026 FlowCare</span>
+          </div>
+          <div className="flex items-center justify-center gap-3 mt-2 text-xs">
+            <Link to="/privacy" className="text-primary hover:underline">Privacy Policy</Link>
+            <span className="text-border">•</span>
+            <Link to="/terms" className="text-primary hover:underline">Terms</Link>
+          </div>
+        </div>
       </div>
     </>
   );
