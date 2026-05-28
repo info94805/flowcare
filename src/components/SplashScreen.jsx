@@ -32,23 +32,28 @@ export default function SplashScreen({ onDone }) {
           transition={{ type: 'spring', stiffness: 180, damping: 16, duration: 0.8 }}
           className="relative w-40 h-40 flex items-center justify-center"
         >
-          {/* Center blossom */}
-          <div className="text-6xl drop-shadow-lg">🌸</div>
+          {/* Center blossom - deepest pink */}
+          <div 
+            className="text-6xl drop-shadow-lg"
+            style={{ filter: 'hue-rotate(-5deg) saturate(1.1)' }}
+          >
+            🌸
+          </div>
           
-          {/* Top-right blossom */}
+          {/* Top-right blossom - lighter pink */}
           <motion.div
             className="absolute text-5xl drop-shadow-lg"
-            style={{ top: '-10px', right: '10px' }}
+            style={{ top: '-10px', right: '10px', filter: 'hue-rotate(5deg) saturate(0.9) brightness(1.1)' }}
             animate={{ y: [0, -3, 0] }}
             transition={{ repeat: Infinity, duration: 3, delay: 0.2 }}
           >
             🌸
           </motion.div>
           
-          {/* Bottom-left blossom */}
+          {/* Bottom-left blossom - peachy pink */}
           <motion.div
             className="absolute text-5xl drop-shadow-lg"
-            style={{ bottom: '-10px', left: '10px' }}
+            style={{ bottom: '-10px', left: '10px', filter: 'hue-rotate(15deg) saturate(0.95) brightness(1.15)' }}
             animate={{ y: [0, 3, 0] }}
             transition={{ repeat: Infinity, duration: 3, delay: 0.4 }}
           >
