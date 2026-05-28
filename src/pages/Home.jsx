@@ -131,6 +131,23 @@ export default function Home() {
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
               <InsightsButton />
             </motion.div>
+
+            {/* Upgrade to Premium */}
+            {user?.subscription_status !== 'active' && (
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }}>
+                <Link to="/subscribe">
+                  <div className="rounded-2xl p-4 bg-gradient-to-r from-primary to-accent text-white shadow-md flex items-center justify-between gap-3">
+                    <div>
+                      <p className="font-heading font-bold text-base">Upgrade to Premium ✨</p>
+                      <p className="text-xs opacity-80 mt-0.5">AI reports, advanced insights & more — one-time ₹399</p>
+                    </div>
+                    <div className="bg-white/20 rounded-xl px-3 py-2 text-xs font-bold whitespace-nowrap">
+                      Get Now →
+                    </div>
+                  </div>
+                </Link>
+              </motion.div>
+            )}
           </>
         )}
       </div>
