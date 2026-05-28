@@ -74,116 +74,163 @@ export default function PDFReport() {
 
   const downloadPDF = () => {
     if (!report) return;
+    const isDoctor = report.type === 'doctor';
     const doc = new jsPDF({ unit: 'pt', format: 'a4' });
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
-    const margin = 50;
+    const margin = 56;
     const usableWidth = pageWidth - margin * 2;
     let pageNum = 1;
 
+    // Color palette
+    const colors = isDoctor
+      ? { headerBg: [22, 38, 66], headerText: [255, 255, 255], accent: [42, 90, 160], bodyText: [30, 30, 40], subText: [100, 110, 130], divider: [180, 190, 210], disclaimerBg: [240, 244, 252], disclaimerText: [70, 90, 130], footerText: [160, 170, 185] }
+      : { headerBg: [255, 133, 162], headerText: [255, 255, 255], accent: [200, 60, 100], bodyText: [40, 20, 30], subText: [150, 100, 120], divider: [255, 133, 162], disclaimerBg: [255, 243, 246], disclaimerText: [160, 60, 80], footerText: [180, 150, 160] };
+
     const addFooter = () => {
+      const [fr, fg, fb] = colors.footerText;
       doc.setFontSize(8);
       doc.setFont('helvetica', 'normal');
-      doc.setTextColor(180, 150, 160);
-      doc.text('FlowCare — Your Cycle Companion', margin, pageHeight - 20);
-      doc.text(`Page ${pageNum}`, pageWidth - margin, pageHeight - 20, { align: 'right' });
+      doc.setTextColor(fr, fg, fb);
+      // Footer separator line
+      doc.setDrawColor(fr, fg, fb);
+      doc.setLineWidth(0.3);
+      doc.line(margin, pageHeight - 32, pageWidth - margin, pageHeight - 32);
+      doc.text('FlowCare Health Report  |  Confidential', margin, pageHeight - 18);
+      doc.text(`Page ${pageNum}`, pageWidth - margin, pageHeight - 18, { align: 'right' });
     };
 
-    // Header background
-    doc.setFillColor(255, 133, 162);
-    doc.rect(0, 0, pageWidth, 90, 'F');
+    // ── HEADER ──
+    const [hbr, hbg, hbb] = colors.headerBg;
+    doc.setFillColor(hbr, hbg, hbb);
+    doc.rect(0, 0, pageWidth, isDoctor ? 110 : 90, 'F');
 
-    // Title
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(24);
-    doc.setFont('helvetica', 'bold');
-    doc.text('FlowCare Health Report', margin, 40);
+    const [htr, htg, htb] = colors.headerText;
+    doc.setTextColor(htr, htg, htb);
 
-    doc.setFontSize(11);
-    doc.setFont('helvetica', 'normal');
-    doc.text(`${report.type === 'doctor' ? '🏥 Doctor Report' : '💕 Personal Report'}`, margin, 62);
-    doc.text(`Generated: ${format(parseISO(report.generatedAt), 'MMMM d, yyyy')}`, margin, 78);
+    if (isDoctor) {
+      // Thin top accent bar
+      doc.setFillColor(42, 90, 160);
+      doc.rect(0, 0, pageWidth, 4, 'F');
 
-    // Disclaimer box
-    doc.setFillColor(255, 243, 246);
-    doc.setDrawColor(220, 100, 130);
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(160, 185, 220);
+      doc.text('CONFIDENTIAL MEDICAL REPORT', margin, 26);
+
+      doc.setFontSize(20);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(255, 255, 255);
+      doc.text('Menstrual Health Summary', margin, 52);
+
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(160, 185, 220);
+      doc.text(`Prepared by FlowCare AI  •  ${format(parseISO(report.generatedAt), 'MMMM d, yyyy')}`, margin, 70);
+      doc.text(`Cycles Analysed: ${cycleLogs.length}  •  Avg Cycle Length: ${avgCycle} days`, margin, 86);
+      doc.text(`Data Period: Last 90 Days`, pageWidth - margin, 86, { align: 'right' });
+    } else {
+      doc.setFontSize(22);
+      doc.setFont('helvetica', 'bold');
+      doc.text('FlowCare Health Report', margin, 38);
+      doc.setFontSize(11);
+      doc.setFont('helvetica', 'normal');
+      doc.text('Personal Wellness Summary', margin, 58);
+      doc.text(`Generated: ${format(parseISO(report.generatedAt), 'MMMM d, yyyy')}`, margin, 74);
+    }
+
+    // ── DISCLAIMER ──
+    const disclaimerY = isDoctor ? 125 : 105;
+    const [dbr, dbg, dbb] = colors.disclaimerBg;
+    const [dtr, dtg, dtb] = colors.disclaimerText;
+    doc.setFillColor(dbr, dbg, dbb);
+    doc.setDrawColor(dtr, dtg, dtb);
     doc.setLineWidth(0.5);
-    doc.roundedRect(margin, 105, usableWidth, 28, 4, 4, 'FD');
-    doc.setTextColor(160, 60, 80);
-    doc.setFontSize(8);
+    doc.roundedRect(margin, disclaimerY, usableWidth, 24, 3, 3, 'FD');
+    doc.setTextColor(dtr, dtg, dtb);
+    doc.setFontSize(7.5);
     doc.setFont('helvetica', 'italic');
     doc.text(
-      'DISCLAIMER: AI-generated for informational purposes only. This is NOT a medical diagnosis. Always consult a qualified healthcare professional.',
-      margin + 8, 123, { maxWidth: usableWidth - 16 }
+      'DISCLAIMER: AI-generated from wellness app data only. This is NOT a clinical diagnosis. Please consult a qualified healthcare professional.',
+      margin + 8, disclaimerY + 15, { maxWidth: usableWidth - 16 }
     );
 
-    // Section divider
-    doc.setDrawColor(255, 133, 162);
-    doc.setLineWidth(1);
-    doc.line(margin, 145, pageWidth - margin, 145);
+    // ── DIVIDER ──
+    const divY = disclaimerY + 36;
+    const [dvr, dvg, dvb] = colors.divider;
+    doc.setDrawColor(dvr, dvg, dvb);
+    doc.setLineWidth(isDoctor ? 0.5 : 1);
+    doc.line(margin, divY, pageWidth - margin, divY);
 
-    // Report content
-    doc.setTextColor(40, 20, 30);
+    // ── CONTENT ──
+    const [btr, btg, btb] = colors.bodyText;
+    const [atr, atg, atb] = colors.accent;
+    doc.setTextColor(btr, btg, btb);
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(10);
 
-    let y = 162;
-    const lineHeight = 16;
+    let y = divY + 18;
+    const lineHeight = isDoctor ? 15 : 16;
 
-    // Process content line by line for better formatting
     const rawLines = report.content.split('\n');
 
     rawLines.forEach(rawLine => {
       const trimmed = rawLine.trim();
-
-      // Detect headings (lines ending with : or all caps or starting with #)
       const isHeading = /^#{1,3}\s/.test(trimmed) || /^[A-Z][A-Z\s\-:]{8,}$/.test(trimmed) || (/^[A-Za-z\s]+:$/.test(trimmed) && trimmed.length < 60);
-      const cleanLine = trimmed.replace(/^#{1,3}\s*/, '');
+      const cleanLine = trimmed.replace(/^#{1,3}\s*/, '').replace(/\*\*/g, '');
 
-      if (y + lineHeight > pageHeight - 45) {
+      if (y + lineHeight > pageHeight - 50) {
         addFooter();
         doc.addPage();
         pageNum++;
         y = margin;
-        // Re-set font after new page
-        doc.setTextColor(40, 20, 30);
+        doc.setTextColor(btr, btg, btb);
+        doc.setFont('helvetica', 'normal');
         doc.setFontSize(10);
       }
 
       if (trimmed === '') {
-        y += lineHeight * 0.5;
+        y += lineHeight * 0.6;
         return;
       }
 
       if (isHeading) {
-        y += 6;
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(11);
-        doc.setTextColor(200, 60, 100);
-        const wrappedHeading = doc.splitTextToSize(cleanLine, usableWidth);
-        wrappedHeading.forEach(l => {
-          if (y + lineHeight > pageHeight - 45) {
-            addFooter();
-            doc.addPage();
-            pageNum++;
-            y = margin;
-          }
-          doc.text(l, margin, y);
-          y += lineHeight;
-        });
+        y += isDoctor ? 10 : 6;
+        if (isDoctor) {
+          // Elegant left border for doctor headings
+          doc.setFillColor(atr, atg, atb);
+          doc.rect(margin, y - 11, 3, 14, 'F');
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(10);
+          doc.setTextColor(atr, atg, atb);
+          const wrapped = doc.splitTextToSize(cleanLine.toUpperCase(), usableWidth - 10);
+          wrapped.forEach(l => {
+            doc.text(l, margin + 10, y);
+            y += lineHeight;
+          });
+        } else {
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(11);
+          doc.setTextColor(atr, atg, atb);
+          const wrapped = doc.splitTextToSize(cleanLine, usableWidth);
+          wrapped.forEach(l => {
+            doc.text(l, margin, y);
+            y += lineHeight;
+          });
+        }
         doc.setFont('helvetica', 'normal');
         doc.setFontSize(10);
-        doc.setTextColor(40, 20, 30);
-        y += 2;
+        doc.setTextColor(btr, btg, btb);
+        y += 3;
       } else {
         const wrapped = doc.splitTextToSize(cleanLine, usableWidth);
         wrapped.forEach(l => {
-          if (y + lineHeight > pageHeight - 45) {
+          if (y + lineHeight > pageHeight - 50) {
             addFooter();
             doc.addPage();
             pageNum++;
             y = margin;
-            doc.setTextColor(40, 20, 30);
+            doc.setTextColor(btr, btg, btb);
             doc.setFont('helvetica', 'normal');
             doc.setFontSize(10);
           }
