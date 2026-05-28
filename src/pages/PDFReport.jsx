@@ -76,57 +76,124 @@ export default function PDFReport() {
     if (!report) return;
     const doc = new jsPDF({ unit: 'pt', format: 'a4' });
     const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
     const margin = 50;
     const usableWidth = pageWidth - margin * 2;
+    let pageNum = 1;
+
+    const addFooter = () => {
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(180, 150, 160);
+      doc.text('FlowCare — Your Cycle Companion', margin, pageHeight - 20);
+      doc.text(`Page ${pageNum}`, pageWidth - margin, pageHeight - 20, { align: 'right' });
+    };
 
     // Header background
     doc.setFillColor(255, 133, 162);
-    doc.rect(0, 0, pageWidth, 80, 'F');
+    doc.rect(0, 0, pageWidth, 90, 'F');
 
     // Title
     doc.setTextColor(255, 255, 255);
-    doc.setFontSize(22);
+    doc.setFontSize(24);
     doc.setFont('helvetica', 'bold');
-    doc.text('FlowCare Health Report', margin, 35);
+    doc.text('FlowCare Health Report', margin, 40);
 
     doc.setFontSize(11);
     doc.setFont('helvetica', 'normal');
-    doc.text(`${report.type === 'doctor' ? 'Doctor Report' : 'Personal Report'} • Generated: ${format(parseISO(report.generatedAt), 'MMMM d, yyyy')}`, margin, 58);
+    doc.text(`${report.type === 'doctor' ? '🏥 Doctor Report' : '💕 Personal Report'}`, margin, 62);
+    doc.text(`Generated: ${format(parseISO(report.generatedAt), 'MMMM d, yyyy')}`, margin, 78);
 
     // Disclaimer box
     doc.setFillColor(255, 243, 246);
-    doc.setDrawColor(255, 133, 162);
-    doc.roundedRect(margin, 95, usableWidth, 36, 6, 6, 'FD');
-    doc.setTextColor(180, 60, 90);
+    doc.setDrawColor(220, 100, 130);
+    doc.setLineWidth(0.5);
+    doc.roundedRect(margin, 105, usableWidth, 28, 4, 4, 'FD');
+    doc.setTextColor(160, 60, 80);
     doc.setFontSize(8);
     doc.setFont('helvetica', 'italic');
-    doc.text('⚠ AI-generated for informational purposes only. This is NOT a medical diagnosis. Consult a qualified healthcare professional.', margin + 10, 117, { maxWidth: usableWidth - 20 });
+    doc.text(
+      'DISCLAIMER: AI-generated for informational purposes only. This is NOT a medical diagnosis. Always consult a qualified healthcare professional.',
+      margin + 8, 123, { maxWidth: usableWidth - 16 }
+    );
+
+    // Section divider
+    doc.setDrawColor(255, 133, 162);
+    doc.setLineWidth(1);
+    doc.line(margin, 145, pageWidth - margin, 145);
 
     // Report content
-    doc.setTextColor(50, 30, 40);
-    doc.setFontSize(10);
+    doc.setTextColor(40, 20, 30);
     doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
 
-    const lines = doc.splitTextToSize(report.content, usableWidth);
-    let y = 150;
-    const lineHeight = 15;
-    const pageHeight = doc.internal.pageSize.getHeight();
+    let y = 162;
+    const lineHeight = 16;
 
-    lines.forEach(line => {
-      if (y + lineHeight > pageHeight - margin) {
+    // Process content line by line for better formatting
+    const rawLines = report.content.split('\n');
+
+    rawLines.forEach(rawLine => {
+      const trimmed = rawLine.trim();
+
+      // Detect headings (lines ending with : or all caps or starting with #)
+      const isHeading = /^#{1,3}\s/.test(trimmed) || /^[A-Z][A-Z\s\-:]{8,}$/.test(trimmed) || (/^[A-Za-z\s]+:$/.test(trimmed) && trimmed.length < 60);
+      const cleanLine = trimmed.replace(/^#{1,3}\s*/, '');
+
+      if (y + lineHeight > pageHeight - 45) {
+        addFooter();
         doc.addPage();
+        pageNum++;
         y = margin;
+        // Re-set font after new page
+        doc.setTextColor(40, 20, 30);
+        doc.setFontSize(10);
       }
-      doc.text(line, margin, y);
-      y += lineHeight;
+
+      if (trimmed === '') {
+        y += lineHeight * 0.5;
+        return;
+      }
+
+      if (isHeading) {
+        y += 6;
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(11);
+        doc.setTextColor(200, 60, 100);
+        const wrappedHeading = doc.splitTextToSize(cleanLine, usableWidth);
+        wrappedHeading.forEach(l => {
+          if (y + lineHeight > pageHeight - 45) {
+            addFooter();
+            doc.addPage();
+            pageNum++;
+            y = margin;
+          }
+          doc.text(l, margin, y);
+          y += lineHeight;
+        });
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(10);
+        doc.setTextColor(40, 20, 30);
+        y += 2;
+      } else {
+        const wrapped = doc.splitTextToSize(cleanLine, usableWidth);
+        wrapped.forEach(l => {
+          if (y + lineHeight > pageHeight - 45) {
+            addFooter();
+            doc.addPage();
+            pageNum++;
+            y = margin;
+            doc.setTextColor(40, 20, 30);
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(10);
+          }
+          doc.text(l, margin, y);
+          y += lineHeight;
+        });
+      }
     });
 
-    // Footer on last page
-    doc.setFontSize(8);
-    doc.setTextColor(180, 150, 160);
-    doc.text('FlowCare — Your Cycle Companion', margin, pageHeight - 25);
-    doc.text(`Page 1`, pageWidth - margin - 30, pageHeight - 25);
-
+    addFooter();
     doc.save(`flowcare-${report.type}-report-${format(new Date(), 'yyyy-MM-dd')}.pdf`);
   };
 
@@ -191,19 +258,19 @@ export default function PDFReport() {
       {report && (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
           <Card className="p-5 space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <CheckCircle className="w-5 h-5 text-green-500" />
-                <p className="font-heading font-bold">Report Ready!</p>
+            <div className="flex flex-col items-center gap-4 py-2">
+              <div className="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center">
+                <CheckCircle className="w-8 h-8 text-green-500" />
               </div>
-              <Button size="sm" onClick={downloadPDF} className="rounded-xl font-heading gap-1">
-                <Download className="w-3.5 h-3.5" /> Download PDF
+              <div className="text-center">
+                <p className="font-heading font-bold text-lg">Report Ready!</p>
+                <p className="text-xs text-muted-foreground mt-1">Your {report.type === 'doctor' ? 'doctor' : 'personal'} report has been generated successfully.</p>
+              </div>
+              <Button onClick={downloadPDF} className="rounded-xl font-heading font-bold gap-2 px-8">
+                <Download className="w-4 h-4" /> Download PDF
               </Button>
             </div>
-            <div className="bg-secondary/30 rounded-xl p-4 max-h-96 overflow-y-auto">
-              <pre className="text-xs whitespace-pre-wrap font-body leading-relaxed">{report.content}</pre>
-            </div>
-            <p className="text-[10px] text-muted-foreground text-center">
+            <p className="text-[10px] text-muted-foreground text-center border-t pt-3">
               ⚠️ AI-generated for informational purposes only. Not a medical diagnosis.
             </p>
           </Card>
