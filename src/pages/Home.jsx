@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { format } from 'date-fns';
-import { Button } from '@/components/ui/button';
-
-import CycleRing from '@/components/home/CycleRing';
 import SplashScreen from '@/components/SplashScreen';
-import QuickLog from '@/components/home/QuickLog';
-import TipCard from '@/components/home/TipCard';
-import { calculateCycleDay, daysUntilNextPeriod, getAverageCycleLength, getPhaseInfo, getCyclePhase } from '@/lib/cycleUtils';
-import { DAILY_TIPS } from '@/lib/articles';
+import PeriodBanner from '@/components/home/PeriodBanner';
+import QuickLogBar from '@/components/home/QuickLogBar';
+import CycleTrackerCard from '@/components/home/CycleTrackerCard';
+import CycleInfoGrid from '@/components/home/CycleInfoGrid';
+import HomeReminders from '@/components/home/HomeReminders';
+import WhatsAppAlertCard from '@/components/home/WhatsAppAlertCard';
+import InsightsButton from '@/components/home/InsightsButton';
+import { calculateCycleDay, daysUntilNextPeriod, getAverageCycleLength } from '@/lib/cycleUtils';
+import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 
 export default function Home() {
   const [user, setUser] = useState(null);
@@ -40,111 +42,98 @@ export default function Home() {
     queryFn: () => base44.entities.CycleLog.list('-start_date', 20),
   });
 
-  const today = format(new Date(), 'yyyy-MM-dd');
-  const { data: todayLogs = [] } = useQuery({
-    queryKey: ['todayLog', today],
-    queryFn: () => base44.entities.DailyLog.filter({ date: today }),
-  });
-
-  const todayLog = todayLogs[0] || null;
   const latestCycle = cycleLogs[0];
   const avgCycleLength = getAverageCycleLength(cycleLogs);
   const cycleDay = latestCycle ? calculateCycleDay(latestCycle.start_date) : null;
   const daysUntil = latestCycle ? daysUntilNextPeriod(latestCycle.start_date, avgCycleLength) : null;
-  const phase = getCyclePhase(cycleDay, avgCycleLength);
-  const phaseInfo = getPhaseInfo(phase);
-
-  // Daily tip based on day of year
-  const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
-  const dailyTip = DAILY_TIPS[dayOfYear % DAILY_TIPS.length];
 
   const hasSetup = cycleLogs.length > 0;
 
   return (
     <>
-    <AnimatePresence>
-      {showSplash && <SplashScreen onDone={handleSplashDone} />}
-    </AnimatePresence>
-    <div className="px-5 pt-6 space-y-5">
-      {/* Header — content below splash */}
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="flex items-center justify-between"
-      >
-        <div>
-          <h1 className="font-heading text-2xl font-bold text-foreground">
-            Hi, {user?.full_name?.split(' ')[0] || 'there'} 💕
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            {format(new Date(), 'EEEE, MMMM d')}
-          </p>
-        </div>
-        <button 
-          onClick={resetSplash}
-          className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center hover:bg-primary/20 transition-colors text-lg"
-        >
-          🌸
-        </button>
-      </motion.div>
+      <AnimatePresence>
+        {showSplash && <SplashScreen onDone={handleSplashDone} />}
+      </AnimatePresence>
 
-      {/* Cycle Ring */}
-      {hasSetup ? (
+      <div className="px-4 pt-5 pb-28 space-y-5">
+        {/* Header */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.2 }}
-          className="flex justify-center"
-        >
-          <CycleRing
-            cycleDay={cycleDay}
-            cycleLength={avgCycleLength}
-            daysUntil={daysUntil}
-          />
-        </motion.div>
-      ) : (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="text-center py-8"
-        >
-          <p className="text-5xl mb-3">🌸</p>
-          <h2 className="font-heading text-lg font-bold mb-2">Welcome to FlowCare!</h2>
-          <p className="text-sm text-muted-foreground mb-4">
-            Let's set up your cycle tracking to get started.
-          </p>
-          <Link to="/onboarding">
-            <Button className="rounded-xl font-heading font-bold px-8">
-              Get Started
-            </Button>
-          </Link>
-        </motion.div>
-      )}
-
-      {/* Phase tip */}
-      {hasSetup && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
+          initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className={`p-4 rounded-2xl ${phaseInfo.bg}`}
+          className="flex items-center justify-between"
         >
-          <p className={`text-sm font-semibold ${phaseInfo.color}`}>
-            {phaseInfo.emoji} {phaseInfo.label}
-          </p>
-          <p className="text-xs text-muted-foreground mt-1">{phaseInfo.tip}</p>
+          <div>
+            <h1 className="font-heading text-2xl font-bold text-foreground">
+              Hi, {user?.full_name?.split(' ')[0] || 'there'} 💕
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              {format(new Date(), 'EEEE, MMMM d')}
+            </p>
+          </div>
+          <button
+            onClick={resetSplash}
+            className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center hover:bg-primary/20 transition-colors text-lg"
+          >
+            🌸
+          </button>
         </motion.div>
-      )}
 
-      {/* Quick Log */}
-      <QuickLog
-        todayLog={todayLog}
-        onLogged={() => queryClient.invalidateQueries({ queryKey: ['todayLog'] })}
-      />
+        {!hasSetup ? (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-center py-10"
+          >
+            <p className="text-5xl mb-3">🌸</p>
+            <h2 className="font-heading text-lg font-bold mb-2">Welcome to FlowCare!</h2>
+            <p className="text-sm text-muted-foreground mb-4">
+              Let's set up your cycle tracking to get started.
+            </p>
+            <Link to="/onboarding">
+              <Button className="rounded-xl font-heading font-bold px-8">
+                Get Started
+              </Button>
+            </Link>
+          </motion.div>
+        ) : (
+          <>
+            {/* Period Banner */}
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+              <PeriodBanner daysUntil={daysUntil} latestCycle={latestCycle} cycleLength={avgCycleLength} />
+            </motion.div>
 
-      {/* Daily Tip */}
-      <TipCard tip={dailyTip} />
-    </div>
+            {/* Quick Log */}
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
+              <QuickLogBar />
+            </motion.div>
+
+            {/* Cycle Tracker */}
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-card border border-border/50 rounded-2xl p-4 shadow-sm">
+              <CycleTrackerCard cycleDay={cycleDay} cycleLength={avgCycleLength} latestCycle={latestCycle} />
+            </motion.div>
+
+            {/* Cycle Info Grid */}
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}>
+              <CycleInfoGrid latestCycle={latestCycle} cycleLength={avgCycleLength} cycleLogs={cycleLogs} />
+            </motion.div>
+
+            {/* Reminders */}
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+              <HomeReminders />
+            </motion.div>
+
+            {/* WhatsApp Alert */}
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}>
+              <WhatsAppAlertCard user={user} />
+            </motion.div>
+
+            {/* AI Insights Button */}
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
+              <InsightsButton />
+            </motion.div>
+          </>
+        )}
+      </div>
     </>
   );
 }
