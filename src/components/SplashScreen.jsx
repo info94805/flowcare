@@ -30,8 +30,30 @@ export default function SplashScreen({ onDone }) {
           initial={{ opacity: 0, scale: 0.6, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ type: 'spring', stiffness: 180, damping: 16, duration: 0.8 }}
+          className="relative w-40 h-40 flex items-center justify-center"
         >
-          <div className="text-8xl drop-shadow-xl">🌸</div>
+          {/* Center blossom */}
+          <div className="text-6xl drop-shadow-lg">🌸</div>
+          
+          {/* Top-right blossom */}
+          <motion.div
+            className="absolute text-5xl drop-shadow-lg"
+            style={{ top: '-10px', right: '10px' }}
+            animate={{ y: [0, -3, 0] }}
+            transition={{ repeat: Infinity, duration: 3, delay: 0.2 }}
+          >
+            🌸
+          </motion.div>
+          
+          {/* Bottom-left blossom */}
+          <motion.div
+            className="absolute text-5xl drop-shadow-lg"
+            style={{ bottom: '-10px', left: '10px' }}
+            animate={{ y: [0, 3, 0] }}
+            transition={{ repeat: Infinity, duration: 3, delay: 0.4 }}
+          >
+            🌸
+          </motion.div>
         </motion.div>
 
         {/* App name */}
