@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 
+const LOGO_URL = "https://media.base44.com/images/public/6a16792f97578664742ab8d9/89f0caaaa_79e53f3f8_logo.png";
+
 export default function SplashScreen({ onDone }) {
   useEffect(() => {
     const t = setTimeout(() => onDone(), 3200);
@@ -30,30 +32,12 @@ export default function SplashScreen({ onDone }) {
           initial={{ opacity: 0, scale: 0.6, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ type: 'spring', stiffness: 180, damping: 16, duration: 0.8 }}
-          className="relative w-40 h-40 flex items-center justify-center"
         >
-          {/* Center blossom */}
-          <div className="text-6xl drop-shadow-lg">🌸</div>
-          
-          {/* Top-right blossom */}
-          <motion.div
-            className="absolute text-5xl drop-shadow-lg"
-            style={{ top: '-10px', right: '10px' }}
-            animate={{ y: [0, -3, 0] }}
-            transition={{ repeat: Infinity, duration: 3, delay: 0.2 }}
-          >
-            🌸
-          </motion.div>
-          
-          {/* Bottom-left blossom */}
-          <motion.div
-            className="absolute text-5xl drop-shadow-lg"
-            style={{ bottom: '-10px', left: '10px' }}
-            animate={{ y: [0, 3, 0] }}
-            transition={{ repeat: Infinity, duration: 3, delay: 0.4 }}
-          >
-            🌸
-          </motion.div>
+          <img
+            src={LOGO_URL}
+            alt="FlowCare Logo"
+            className="w-36 h-36 object-contain drop-shadow-xl"
+          />
         </motion.div>
 
         {/* App name */}

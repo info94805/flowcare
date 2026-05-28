@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
-
+import { Flower2 } from 'lucide-react';
 import CycleRing from '@/components/home/CycleRing';
 import SplashScreen from '@/components/SplashScreen';
 import QuickLog from '@/components/home/QuickLog';
@@ -82,9 +82,9 @@ export default function Home() {
         </div>
         <button 
           onClick={resetSplash}
-          className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center hover:bg-primary/20 transition-colors text-lg"
+          className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center hover:bg-primary/20 transition-colors"
         >
-          🌸
+          <Flower2 className="w-5 h-5 text-primary" />
         </button>
       </motion.div>
 
