@@ -39,7 +39,10 @@ export default function PDFReport() {
     setError(null);
 
     const prompt = reportType === 'doctor'
-      ? `Generate a detailed, professional menstrual health report suitable for a doctor consultation. Include:
+      ? `Generate a detailed, professional menstrual health report suitable for a doctor consultation. 
+         IMPORTANT: Use plain text only. NO emojis, NO markdown symbols like ** or *, NO special unicode characters.
+         Use section headings followed by a colon on their own line (e.g. "Patient Summary:").
+         Include:
          - Patient summary (do not use real name, use "Patient")
          - Cycle analysis: average cycle length ${avgCycle} days, ${cycleLogs.length} cycles tracked
          - Most common symptoms: ${topSymptoms || 'None logged'}
@@ -48,16 +51,19 @@ export default function PDFReport() {
          - Health observations and patterns
          - Questions to ask the doctor
          - Recommendations
-         Write in clear medical note format. Include a disclaimer that this is AI-generated from a wellness app, not a clinical assessment.`
-      : `Generate a warm, personal menstrual health summary report for a young woman aged 13-23. Include:
+         Write in clear, professional medical note format. Include a brief disclaimer at the end.`
+      : `Generate a warm, personal menstrual health summary report for a young woman aged 13-23.
+         IMPORTANT: Use plain text only. NO emojis, NO markdown symbols like ** or *, NO special unicode characters.
+         Use section headings followed by a colon on their own line (e.g. "Cycle Stats:").
+         Include:
          - A friendly welcome and summary of her tracking
          - Cycle stats: average ${avgCycle} days, ${cycleLogs.length} cycles tracked
-         - Top symptoms: ${topSymptoms || 'Nothing major logged — great!'}
+         - Top symptoms: ${topSymptoms || 'Nothing major logged - great!'}
          - Mood patterns: Most frequent mood is ${topMoodLabel}
          - Wellness insights and patterns noticed
          - Personalized self-care tips based on her data
          - Encouragement and positive affirmations
-         Keep it warm, supportive, age-appropriate, and empowering. Use some emojis. End with a reminder to see a doctor if she has concerns.`;
+         Keep it warm, supportive, age-appropriate, and empowering. End with a reminder to see a doctor if she has concerns.`;
 
     try {
       const content = await base44.integrations.Core.InvokeLLM({ prompt });
@@ -163,6 +169,10 @@ export default function PDFReport() {
     doc.line(margin, divY, pageWidth - margin, divY);
 
     // ── CONTENT ──
+    // Strip emojis and unicode characters that jsPDF can't render
+    // Remove all non-ASCII characters (emojis, special unicode) that jsPDF cannot render
+    const stripEmojis = (str) => str.replace(/[^\x00-\x7E]/g, '').trim();
+
     const [btr, btg, btb] = colors.bodyText;
     const [atr, atg, atb] = colors.accent;
     doc.setTextColor(btr, btg, btb);
@@ -170,73 +180,62 @@ export default function PDFReport() {
     doc.setFontSize(10);
 
     let y = divY + 18;
-    const lineHeight = isDoctor ? 15 : 16;
+    const lineHeight = 16;
 
     const rawLines = report.content.split('\n');
 
     rawLines.forEach(rawLine => {
       const trimmed = rawLine.trim();
-      const isHeading = /^#{1,3}\s/.test(trimmed) || /^[A-Z][A-Z\s\-:]{8,}$/.test(trimmed) || (/^[A-Za-z\s]+:$/.test(trimmed) && trimmed.length < 60);
-      const cleanLine = trimmed.replace(/^#{1,3}\s*/, '').replace(/\*\*/g, '');
+      // Clean: remove emojis, markdown bold/italic markers, leading #
+      const cleanLine = stripEmojis(trimmed.replace(/^#{1,3}\s*/, '').replace(/\*\*/g, '').replace(/\*/g, ''));
 
-      if (y + lineHeight > pageHeight - 50) {
-        addFooter();
-        doc.addPage();
-        pageNum++;
-        y = margin;
-        doc.setTextColor(btr, btg, btb);
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(10);
-      }
+      // Detect headings: starts with # OR is short line ending with colon
+      const isHeading = /^#{1,3}\s/.test(trimmed) || (/^[A-Za-z][A-Za-z\s\-,&]+:$/.test(cleanLine) && cleanLine.length < 55);
 
       if (trimmed === '') {
-        y += lineHeight * 0.6;
+        y += lineHeight * 0.5;
         return;
       }
 
+      if (!cleanLine) return; // skip emoji-only lines
+
+      const checkPageBreak = () => {
+        if (y + lineHeight > pageHeight - 50) {
+          addFooter();
+          doc.addPage();
+          pageNum++;
+          y = margin;
+          doc.setTextColor(btr, btg, btb);
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(10);
+        }
+      };
+
       if (isHeading) {
-        y += isDoctor ? 10 : 6;
+        y += 8;
+        checkPageBreak();
         if (isDoctor) {
-          // Elegant left border for doctor headings
           doc.setFillColor(atr, atg, atb);
           doc.rect(margin, y - 11, 3, 14, 'F');
           doc.setFont('helvetica', 'bold');
           doc.setFontSize(10);
           doc.setTextColor(atr, atg, atb);
-          const wrapped = doc.splitTextToSize(cleanLine.toUpperCase(), usableWidth - 10);
-          wrapped.forEach(l => {
-            doc.text(l, margin + 10, y);
-            y += lineHeight;
-          });
+          const wrapped = doc.splitTextToSize(cleanLine.toUpperCase(), usableWidth - 14);
+          wrapped.forEach(l => { checkPageBreak(); doc.text(l, margin + 10, y); y += lineHeight; });
         } else {
           doc.setFont('helvetica', 'bold');
           doc.setFontSize(11);
           doc.setTextColor(atr, atg, atb);
           const wrapped = doc.splitTextToSize(cleanLine, usableWidth);
-          wrapped.forEach(l => {
-            doc.text(l, margin, y);
-            y += lineHeight;
-          });
+          wrapped.forEach(l => { checkPageBreak(); doc.text(l, margin, y); y += lineHeight; });
         }
         doc.setFont('helvetica', 'normal');
         doc.setFontSize(10);
         doc.setTextColor(btr, btg, btb);
-        y += 3;
+        y += 2;
       } else {
         const wrapped = doc.splitTextToSize(cleanLine, usableWidth);
-        wrapped.forEach(l => {
-          if (y + lineHeight > pageHeight - 50) {
-            addFooter();
-            doc.addPage();
-            pageNum++;
-            y = margin;
-            doc.setTextColor(btr, btg, btb);
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(10);
-          }
-          doc.text(l, margin, y);
-          y += lineHeight;
-        });
+        wrapped.forEach(l => { checkPageBreak(); doc.text(l, margin, y); y += lineHeight; });
       }
     });
 
