@@ -189,7 +189,9 @@ function WhatsAppNumbers({ user, onUpdate }) {
 
   const addNumber = async () => {
     if (!num.trim()) return;
-    const updated = [...numbers, num.trim()];
+    let n = num.trim();
+    if (!n.startsWith('+') && n.length === 10) n = '+91' + n;
+    const updated = [...numbers, n];
     await base44.auth.updateMe({ whatsapp_family: updated });
     setNum('');
     setAdding(false);

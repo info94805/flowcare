@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ChevronDown, ChevronUp, Send } from 'lucide-react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { format } from 'date-fns';
 
@@ -17,12 +17,19 @@ export default function WhatsAppAlertCard({ user }) {
   const name = user?.full_name?.split(' ')[0] || 'Anna';
   const previewMessage = `🌺 Hi! My period just started today (${today}). Logging via Jia 💕`;
 
+  const [saved, setSaved] = useState(false);
+
   const saveNumber = async () => {
     if (!number.trim()) return;
     setSaving(true);
-    const updated = [number.trim(), ...numbers.slice(1)];
+    // Auto-add +91 if no country code
+    let num = number.trim();
+    if (!num.startsWith('+') && num.length === 10) num = '+91' + num;
+    const updated = [num, ...numbers.slice(1)];
     await base44.auth.updateMe({ whatsapp_family: updated });
     setSaving(false);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
   };
 
   return (
@@ -67,7 +74,7 @@ export default function WhatsAppAlertCard({ user }) {
                 onClick={saveNumber}
                 disabled={!number.trim() || saving}
               >
-                <Send className="w-4 h-4" />
+                {saved ? '✓' : saving ? '...' : 'Save'}
               </Button>
             </div>
           </div>
