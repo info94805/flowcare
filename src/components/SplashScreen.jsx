@@ -31,11 +31,7 @@ export default function SplashScreen({ onDone }) {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ type: 'spring', stiffness: 180, damping: 16, duration: 0.8 }}
         >
-          <img
-            src="https://media.base44.com/images/public/6a16792f97578664742ab8d9/b2dcddb53_1654353df_logo.png"
-            alt="FlowCare Logo"
-            className="w-36 h-36 object-contain drop-shadow-xl"
-          />
+          <div className="text-8xl drop-shadow-xl">🌸</div>
         </motion.div>
 
         {/* App name */}

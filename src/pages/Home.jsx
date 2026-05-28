@@ -82,13 +82,9 @@ export default function Home() {
         </div>
         <button 
           onClick={resetSplash}
-          className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center hover:bg-primary/20 transition-colors"
+          className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center hover:bg-primary/20 transition-colors text-lg"
         >
-          <img
-            src="https://media.base44.com/images/public/6a16792f97578664742ab8d9/b2dcddb53_1654353df_logo.png"
-            alt="Reset Splash"
-            className="w-6 h-6 object-contain"
-          />
+          🌸
         </button>
       </motion.div>
 
