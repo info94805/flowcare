@@ -6,8 +6,10 @@ import { Card } from '@/components/ui/card';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell, RadialBarChart, RadialBar } from 'recharts';
 import { getAverageCycleLength } from '@/lib/cycleUtils';
 import { MOODS, SYMPTOMS_LIST } from '@/lib/cycleUtils';
-import { TrendingUp, Droplets, Heart, Moon, Zap } from 'lucide-react';
+import { TrendingUp, Droplets, Heart, Moon, Zap, Sparkles, FileText } from 'lucide-react';
 import { format, parseISO, subDays } from 'date-fns';
+import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 
 const COLORS = ['#FF85A2', '#C9A0DC', '#FFB3C6', '#85D1FF', '#B5EAD7'];
 
@@ -188,6 +190,28 @@ export default function Insights() {
           </Card>
         </motion.div>
       )}
+
+      {/* AI Report CTA */}
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.75 }}>
+        <Card className="p-5 bg-gradient-to-br from-primary/10 via-accent/10 to-primary/5 border-primary/30">
+          <div className="flex items-start gap-3">
+            <div className="w-10 h-10 bg-primary/20 rounded-xl flex items-center justify-center flex-shrink-0">
+              <Sparkles className="w-5 h-5 text-primary" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="font-heading font-bold text-sm">AI Health Report</p>
+              <p className="text-xs text-muted-foreground mt-0.5 mb-3">
+                Generate a personalized PDF report from your cycle data — for yourself or your doctor.
+              </p>
+              <Link to="/report">
+                <Button size="sm" className="rounded-xl font-heading font-bold gap-1.5">
+                  <FileText className="w-3.5 h-3.5" /> Generate Report
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </Card>
+      </motion.div>
 
       {/* Water & Sleep */}
       <div className="grid grid-cols-2 gap-3">
