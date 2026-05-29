@@ -55,7 +55,7 @@ export default function Landing() {
 
       {/* Footer with Privacy Policy - visible to Google */}
       <div className="mt-auto border-t border-border/30 py-6 text-center px-6">
-        <p className="text-xs text-muted-foreground mb-3">FlowCare is designed for School and Collgirls aged 13–23 to safely track menstrual health.
+        <p className="text-xs text-muted-foreground mb-3">FlowCare is designed for School and College girls aged 13–23 to safely track menstrual health.
 
         </p>
         <div className="flex items-center justify-center gap-4 text-xs flex-wrap">
