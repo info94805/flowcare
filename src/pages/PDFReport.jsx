@@ -90,7 +90,7 @@ export default function PDFReport() {
 
     // Color palette
     const colors = isDoctor
-      ? { headerBg: [22, 38, 66], headerText: [255, 255, 255], accent: [42, 90, 160], bodyText: [30, 30, 40], subText: [100, 110, 130], divider: [180, 190, 210], disclaimerBg: [240, 244, 252], disclaimerText: [70, 90, 130], footerText: [160, 170, 185] }
+      ? { headerBg: [235, 80, 120], headerText: [255, 255, 255], accent: [200, 50, 90], bodyText: [40, 20, 30], subText: [150, 100, 120], divider: [235, 80, 120], disclaimerBg: [255, 243, 246], disclaimerText: [160, 60, 80], footerText: [200, 140, 160] }
       : { headerBg: [255, 133, 162], headerText: [255, 255, 255], accent: [200, 60, 100], bodyText: [40, 20, 30], subText: [150, 100, 120], divider: [255, 133, 162], disclaimerBg: [255, 243, 246], disclaimerText: [160, 60, 80], footerText: [180, 150, 160] };
 
     const addFooter = () => {
@@ -115,13 +115,15 @@ export default function PDFReport() {
     doc.setTextColor(htr, htg, htb);
 
     if (isDoctor) {
-      // Thin top accent bar
-      doc.setFillColor(42, 90, 160);
+      // Thin top accent bar (white/translucent strip)
+      doc.setFillColor(255, 255, 255);
+      doc.setGState(doc.GState({ opacity: 0.15 }));
       doc.rect(0, 0, pageWidth, 4, 'F');
+      doc.setGState(doc.GState({ opacity: 1 }));
 
       doc.setFontSize(9);
       doc.setFont('helvetica', 'normal');
-      doc.setTextColor(160, 185, 220);
+      doc.setTextColor(255, 220, 230);
       doc.text('CONFIDENTIAL MEDICAL REPORT', margin, 26);
 
       doc.setFontSize(20);
@@ -129,9 +131,20 @@ export default function PDFReport() {
       doc.setTextColor(255, 255, 255);
       doc.text('Menstrual Health Summary', margin, 52);
 
+      // Patient name on the right side of header
+      const patientName = user?.full_name || 'Patient';
+      doc.setFontSize(11);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(255, 255, 255);
+      doc.text(patientName, pageWidth - margin, 44, { align: 'right' });
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(255, 220, 230);
+      doc.text('Patient', pageWidth - margin, 56, { align: 'right' });
+
       doc.setFontSize(9);
       doc.setFont('helvetica', 'normal');
-      doc.setTextColor(160, 185, 220);
+      doc.setTextColor(255, 220, 230);
       doc.text(`Prepared by FlowCare AI  •  ${format(parseISO(report.generatedAt), 'MMMM d, yyyy')}`, margin, 70);
       doc.text(`Cycles Analysed: ${cycleLogs.length}  •  Avg Cycle Length: ${avgCycle} days`, margin, 86);
       doc.text(`Data Period: Last 90 Days`, pageWidth - margin, 86, { align: 'right' });
@@ -215,7 +228,7 @@ export default function PDFReport() {
         y += 8;
         checkPageBreak();
         if (isDoctor) {
-          doc.setFillColor(atr, atg, atb);
+          doc.setFillColor(235, 80, 120);
           doc.rect(margin, y - 11, 3, 14, 'F');
           doc.setFont('helvetica', 'bold');
           doc.setFontSize(10);
