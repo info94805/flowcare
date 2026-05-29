@@ -118,33 +118,39 @@ export default function SubscribePage() {
 
       {/* Price + features card */}
       <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.1 }}>
-        <Card className="p-6 mb-5 border-2 border-primary/30 bg-gradient-to-br from-primary/5 to-accent/5 relative overflow-hidden">
-          <div className="absolute top-3 right-3">
-            <Badge className="bg-primary text-primary-foreground font-heading text-xs rounded-full px-3">Lifetime</Badge>
-          </div>
+      <Card className="p-6 mb-5 border-2 border-primary/30 bg-gradient-to-br from-primary/5 to-accent/5 relative overflow-hidden">
+        <div className="absolute top-3 right-3">
+          <Badge className="bg-primary text-primary-foreground font-heading text-xs rounded-full px-3">Lifetime</Badge>
+        </div>
 
-          {/* Price display */}
-          <div className="text-center mb-5">
-            {isNative ? (
-              <>
-                <p className="text-5xl font-heading font-bold text-primary">$6.99</p>
-                <p className="text-sm text-muted-foreground mt-1">One-time · Lifetime access</p>
-                <p className="text-xs text-muted-foreground">Via {platform === 'ios' ? 'Apple' : 'Google'} Play Store</p>
-              </>
-            ) : isIndia() ? (
-              <>
-                <p className="text-5xl font-heading font-bold text-primary">₹399</p>
-                <p className="text-sm text-muted-foreground mt-1">One-time · Lifetime access</p>
-                <p className="text-xs text-muted-foreground">India pricing via Razorpay</p>
-              </>
-            ) : (
-              <>
-                <p className="text-5xl font-heading font-bold text-primary">$6.99</p>
-                <p className="text-sm text-muted-foreground mt-1">One-time · Lifetime access</p>
-                <p className="text-xs text-muted-foreground">Download the app to purchase</p>
-              </>
-            )}
-          </div>
+        {/* 7-day trial banner */}
+        <div className="bg-green-500/10 border border-green-500/30 rounded-xl px-4 py-2.5 mb-4 text-center">
+          <p className="text-green-700 font-heading font-bold text-sm">🎉 7-Day Free Trial Included</p>
+          <p className="text-green-600 text-xs mt-0.5">Try all premium features free for 7 days</p>
+        </div>
+
+        {/* Price display */}
+        <div className="text-center mb-5">
+          {isNative ? (
+            <>
+              <p className="text-5xl font-heading font-bold text-primary">$6.99</p>
+              <p className="text-sm text-muted-foreground mt-1">One-time · Lifetime access</p>
+              <p className="text-xs text-muted-foreground">Via {platform === 'ios' ? 'Apple' : 'Google'} Play Store</p>
+            </>
+          ) : isIndia() ? (
+            <>
+              <p className="text-5xl font-heading font-bold text-primary">₹399</p>
+              <p className="text-sm text-muted-foreground mt-1">One-time · Lifetime access</p>
+              <p className="text-xs text-muted-foreground">India pricing via Razorpay</p>
+            </>
+          ) : (
+            <>
+              <p className="text-5xl font-heading font-bold text-primary">$6.99</p>
+              <p className="text-sm text-muted-foreground mt-1">One-time · Lifetime access</p>
+              <p className="text-xs text-muted-foreground">Download the app to purchase</p>
+            </>
+          )}
+        </div>
 
           {/* Feature list */}
           <div className="space-y-2.5 mb-6">

@@ -6,8 +6,9 @@ import { Card } from '@/components/ui/card';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell, RadialBarChart, RadialBar } from 'recharts';
 import { getAverageCycleLength } from '@/lib/cycleUtils';
 import { MOODS, SYMPTOMS_LIST } from '@/lib/cycleUtils';
-import { TrendingUp, Droplets, Heart, Moon, Zap } from 'lucide-react';
+import { TrendingUp, Droplets, Heart, Moon, Zap, Sparkles, ArrowRight } from 'lucide-react';
 import { format, parseISO, subDays } from 'date-fns';
+import { Link } from 'react-router-dom';
 
 const COLORS = ['#FF85A2', '#C9A0DC', '#FFB3C6', '#85D1FF', '#B5EAD7'];
 
@@ -86,6 +87,34 @@ export default function Insights() {
   return (
     <div className="px-4 pt-6 pb-8 space-y-5">
       <h1 className="font-heading text-2xl font-bold px-1">Insights ✨</h1>
+
+      {/* AI Insights / Jia button */}
+      <Link to="/jia">
+        <div className="flex items-center gap-3 bg-gradient-to-r from-primary to-accent rounded-2xl px-5 py-4 shadow-md active:scale-95 transition-transform">
+          <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0">
+            <Sparkles className="w-5 h-5 text-white" />
+          </div>
+          <div className="flex-1">
+            <p className="font-heading font-bold text-white text-sm">Ask Jia — AI Health Companion</p>
+            <p className="text-[11px] text-white/80">Get personalised insights for your cycle</p>
+          </div>
+          <ArrowRight className="w-5 h-5 text-white" />
+        </div>
+      </Link>
+
+      {/* AI Report button */}
+      <Link to="/report">
+        <div className="flex items-center gap-3 bg-card border border-border rounded-2xl px-5 py-3.5 shadow-sm active:scale-95 transition-transform">
+          <div className="w-9 h-9 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+            <span className="text-lg">📄</span>
+          </div>
+          <div className="flex-1">
+            <p className="font-heading font-bold text-sm">AI Health Report</p>
+            <p className="text-[11px] text-muted-foreground">Doctor report or personal summary</p>
+          </div>
+          <ArrowRight className="w-4 h-4 text-muted-foreground" />
+        </div>
+      </Link>
 
       {/* Summary cards */}
       <div className="grid grid-cols-2 gap-3">

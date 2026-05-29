@@ -10,7 +10,6 @@ import CycleTrackerCard from '@/components/home/CycleTrackerCard';
 import CycleInfoGrid from '@/components/home/CycleInfoGrid';
 import HomeReminders from '@/components/home/HomeReminders';
 import WhatsAppAlertCard from '@/components/home/WhatsAppAlertCard';
-import InsightsButton from '@/components/home/InsightsButton';
 import { calculateCycleDay, daysUntilNextPeriod, getAverageCycleLength } from '@/lib/cycleUtils';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
@@ -56,7 +55,7 @@ export default function Home() {
         {showSplash && <SplashScreen onDone={handleSplashDone} />}
       </AnimatePresence>
 
-      <div className="px-4 pt-5 pb-28 space-y-5">
+      <div className="px-4 pt-5 pb-4 space-y-5">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
@@ -122,11 +121,6 @@ export default function Home() {
               <WhatsAppAlertCard user={user} />
             </motion.div>
 
-            {/* AI Insights Button */}
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
-              <InsightsButton />
-            </motion.div>
-
             {/* Upgrade to Premium */}
             {user?.subscription_status !== 'active' && (
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }}>
@@ -147,15 +141,11 @@ export default function Home() {
         )}
 
         {/* Footer - Privacy & Legal */}
-        <div className="text-center py-4 border-t border-border/30 mt-8">
-          <div className="flex items-center justify-center gap-1 text-xs text-muted-foreground">
-            <Copyright className="w-3 h-3" />
-            <span>2026 FlowCare</span>
-          </div>
-          <div className="flex items-center justify-center gap-3 mt-2 text-xs">
-            <Link to="/privacy" className="text-primary hover:underline">Privacy Policy</Link>
+        <div className="text-center py-2 border-t border-border/30">
+          <div className="flex items-center justify-center gap-3 text-xs">
+            <Link to="/privacy" className="text-muted-foreground hover:underline">Privacy</Link>
             <span className="text-border">•</span>
-            <Link to="/terms" className="text-primary hover:underline">Terms</Link>
+            <Link to="/terms" className="text-muted-foreground hover:underline">Terms</Link>
           </div>
         </div>
       </div>
