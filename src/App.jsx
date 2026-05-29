@@ -30,7 +30,8 @@ import SupportPage from '@/pages/legal/SupportPage';
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
 
-  if (isLoadingPublicSettings || isLoadingAuth) {
+  // Show loading only for authenticated routes, not public ones
+  if ((isLoadingPublicSettings || isLoadingAuth) && window.location.pathname !== '/') {
     return (
       <div className="fixed inset-0 flex items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-3">
