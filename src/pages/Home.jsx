@@ -15,7 +15,6 @@ import { calculateCycleDay, daysUntilNextPeriod, getAverageCycleLength } from '@
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { Copyright } from 'lucide-react';
-import BlossomFlower from '@/components/home/BlossomFlower';
 
 export default function Home() {
   const [user, setUser] = useState(null);
@@ -74,9 +73,9 @@ export default function Home() {
           </div>
           <button
             onClick={resetSplash}
-            className="w-12 h-12 rounded-full flex items-center justify-center hover:scale-110 transition-transform"
+            className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center hover:bg-primary/20 transition-colors text-lg"
           >
-            <BlossomFlower size={44} />
+            🌸
           </button>
         </motion.div>
 
