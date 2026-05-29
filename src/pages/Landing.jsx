@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { Heart, Shield, Bell, BarChart2, Sparkles, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import BlossomFlower from '@/components/BlossomFlower';
 
 const features = [
   { icon: Heart, label: 'Period Tracking', desc: 'Track your cycle with ease and accuracy' },
@@ -30,7 +31,9 @@ export default function Landing() {
     <div className="min-h-screen bg-background flex flex-col">
       {/* Hero */}
       <div className="flex flex-col items-center justify-center px-6 pt-16 pb-10 text-center">
-        <div className="text-6xl mb-4">🌸</div>
+        <div className="mb-6 flex items-center justify-center">
+          <BlossomFlower size={160} />
+        </div>
         <h1 className="font-heading text-4xl font-bold text-foreground mb-2">FlowCare</h1>
         <p className="text-muted-foreground text-base max-w-xs mb-8">
           Your personal menstrual health companion — track, understand, and care for your cycle.
