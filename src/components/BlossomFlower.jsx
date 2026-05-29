@@ -35,8 +35,8 @@ export default function BlossomFlower({ size = 140 }) {
         height={s}
         viewBox={`0 0 ${s} ${s}`}
         style={{ position: 'relative', zIndex: 1, filter: 'drop-shadow(0 0 12px rgba(255,100,150,0.7)) drop-shadow(0 0 24px rgba(255,133,162,0.4))' }}
-        animate={{ rotate: [0, 360] }}
-        transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+        animate={{ opacity: [0.7, 1, 0.7] }}
+        transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
       >
         <defs>
           <radialGradient id="petalGrad" cx="50%" cy="30%" r="70%">
