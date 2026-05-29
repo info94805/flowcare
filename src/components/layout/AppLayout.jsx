@@ -16,15 +16,15 @@ export default function AppLayout() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background">
-      <main className="pb-20 max-w-lg mx-auto">
+    <div className="h-screen flex flex-col bg-background overflow-hidden">
+      <main className="flex-1 overflow-y-auto max-w-lg mx-auto w-full pb-16">
         <Outlet />
       </main>
       <BottomNav />
       {!hideJia && (
         <Link
           to="/jia"
-          className="fixed bottom-24 right-4 z-50 w-12 h-12 rounded-full bg-gradient-to-br from-primary to-accent shadow-lg flex items-center justify-center hover:scale-110 active:scale-95 transition-transform"
+          className="fixed bottom-20 right-4 z-50 w-12 h-12 rounded-full bg-gradient-to-br from-primary to-accent shadow-lg flex items-center justify-center hover:scale-110 active:scale-95 transition-transform"
           title="Chat with Jia"
         >
           <Sparkles className="w-4 h-4 text-white" />
