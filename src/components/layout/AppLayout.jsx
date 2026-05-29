@@ -1,11 +1,19 @@
-import React from 'react';
-import { Outlet, Link, useLocation } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import BottomNav from './BottomNav';
 import { Sparkles } from 'lucide-react';
+import { base44 } from '@/api/base44Client';
 
 export default function AppLayout() {
   const location = useLocation();
+  const navigate = useNavigate();
   const hideJia = location.pathname === '/jia';
+
+  useEffect(() => {
+    base44.auth.isAuthenticated().then(authed => {
+      if (!authed) navigate('/');
+    });
+  }, []);
 
   return (
     <div className="min-h-screen bg-background">

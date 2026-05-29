@@ -7,6 +7,7 @@ import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import { ThemeProvider } from '@/lib/ThemeContext';
 
+import Landing from '@/pages/Landing';
 import AppLayout from '@/components/layout/AppLayout';
 import Home from '@/pages/Home';
 import Onboarding from '@/pages/Onboarding';
@@ -42,13 +43,23 @@ const AuthenticatedApp = () => {
 
   if (authError) {
     if (authError.type === 'user_not_registered') return <UserNotRegisteredError />;
-    if (authError.type === 'auth_required') { navigateToLogin(); return null; }
+    // Don't auto-redirect on auth_required — let the landing page handle login
   }
 
   return (
     <Routes>
+      {/* Public routes — no auth required */}
+      <Route path="/" element={<Landing />} />
+      <Route path="/privacy" element={<PrivacyPage />} />
+      <Route path="/terms" element={<TermsPage />} />
+      <Route path="/legal" element={<LegalPage />} />
+      <Route path="/refund" element={<RefundPage />} />
+      <Route path="/support" element={<SupportPage />} />
+      <Route path="/subscribe" element={<SubscribePage />} />
+      <Route path="/onboarding" element={<Onboarding />} />
+      {/* Authenticated routes */}
       <Route element={<AppLayout />}>
-        <Route path="/" element={<Home />} />
+        <Route path="/home" element={<Home />} />
         <Route path="/calendar" element={<Calendar />} />
         <Route path="/log" element={<DailyLogPage />} />
         <Route path="/learn" element={<Learn />} />
@@ -59,13 +70,6 @@ const AuthenticatedApp = () => {
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/report" element={<PDFReport />} />
       </Route>
-      <Route path="/onboarding" element={<Onboarding />} />
-      <Route path="/subscribe" element={<SubscribePage />} />
-      <Route path="/privacy" element={<PrivacyPage />} />
-      <Route path="/terms" element={<TermsPage />} />
-      <Route path="/legal" element={<LegalPage />} />
-      <Route path="/refund" element={<RefundPage />} />
-      <Route path="/support" element={<SupportPage />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

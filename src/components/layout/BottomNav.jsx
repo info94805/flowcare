@@ -4,7 +4,7 @@ import { Home, CalendarDays, PenLine, User, BarChart3 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const navItems = [
-  { path: '/', icon: Home, label: 'Home' },
+  { path: '/home', icon: Home, label: 'Home' },
   { path: '/calendar', icon: CalendarDays, label: 'Calendar' },
   { path: '/log', icon: PenLine, label: 'Log' },
   { path: '/insights', icon: BarChart3, label: 'Insights' },
@@ -14,8 +14,8 @@ const navItems = [
 export default function BottomNav() {
   const location = useLocation();
 
-  const hidden = ['/onboarding', '/subscribe', '/privacy', '/terms', '/legal', '/refund', '/support'];
-  if (hidden.some(p => location.pathname.startsWith(p))) return null;
+  const hidden = ['/', '/onboarding', '/subscribe', '/privacy', '/terms', '/legal', '/refund', '/support'];
+  if (hidden.some(p => location.pathname === p || location.pathname.startsWith(p + '/'))) return null;
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-lg border-t border-border">
