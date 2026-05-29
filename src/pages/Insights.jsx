@@ -103,6 +103,7 @@ export default function Insights() {
       </Link>
 
       {/* AI Report button */}
+      <div className="mt-2" />
       <Link to="/report">
         <div className="flex items-center gap-3 bg-card border border-border rounded-2xl px-5 py-3.5 shadow-sm active:scale-95 transition-transform">
           <div className="w-9 h-9 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
