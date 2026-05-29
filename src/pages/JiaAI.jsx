@@ -96,12 +96,12 @@ export default function JiaAI() {
       {messages.length <= 1 && (
         <div className="px-4 pb-3 shrink-0">
           <p className="text-xs text-muted-foreground mb-2 px-1">Suggested questions</p>
-          <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
+          <div className="flex flex-wrap gap-2 pb-1">
             {SUGGESTED.map((q, i) => (
               <button
                 key={i}
                 onClick={() => sendMessage(q)}
-                className="shrink-0 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-medium hover:bg-primary/20 transition-colors"
+                className="px-3 py-1.5 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-medium hover:bg-primary/20 transition-colors"
               >
                 {q}
               </button>
