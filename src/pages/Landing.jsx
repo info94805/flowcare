@@ -11,7 +11,7 @@ const features = [
   { icon: Bell, label: 'Smart Reminders', desc: 'Never miss important health milestones' },
   { icon: Shield, label: 'Private & Secure', desc: 'Your data stays yours — fully encrypted' },
   { icon: Sparkles, label: 'AI Reports', desc: 'Generate doctor-ready health reports instantly' },
-  { icon: Lock, label: 'Google Login', desc: 'Sign in securely with your Google account' },
+  { icon: Lock, label: 'Secure Login', desc: 'Sign in safely with your account' },
 ];
 
 export default function Landing() {
@@ -39,7 +39,7 @@ export default function Landing() {
           Your personal menstrual health companion — track, understand, and care for your cycle.
         </p>
         <Button onClick={handleLogin} className="rounded-xl font-heading font-bold px-10 py-6 text-base">
-          Get Started with Google
+          Get Started
         </Button>
       </div>
 
