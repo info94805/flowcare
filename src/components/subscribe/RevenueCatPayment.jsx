@@ -56,11 +56,11 @@ export default function RevenueCatPayment({ platform, onSuccess, onError }) {
       <div className="p-4 rounded-xl bg-primary/5 border border-primary/20 text-center">
         <Smartphone className="w-8 h-8 text-primary mx-auto mb-2" />
         <p className="text-sm font-semibold">
-          {platform === 'ios' ? 'App Store' : 'Google Play'} Purchase
+          {platform === 'ios' ? 'Apple App Store' : 'Google Play'} In-App Purchase
         </p>
         <p className="text-xs text-muted-foreground mt-1">
-          Complete your purchase via the {platform === 'ios' ? 'App Store' : 'Google Play Store'},
-          then tap the button below to verify and unlock premium.
+          Purchase is handled securely via {platform === 'ios' ? 'Apple' : 'Google'}.
+          After completing your purchase, tap below to verify and unlock premium.
         </p>
       </div>
 

@@ -79,16 +79,18 @@ export default function SubscribePage() {
     );
   }
 
-  const isNative = platform === 'ios' || platform === 'android';
+  // iOS/Android user agent = native app shell with IAP support
+  const isMobileApp = platform === 'ios' || platform === 'android';
   const isIndia = () => {
     const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
     return tz.includes('Kolkata') || tz.includes('Calcutta');
   };
 
-  // On mobile browsers (not native app), still show Razorpay for India, else show message
-  const showRazorpay = !isNative && isIndia();
-  const showRevenueCat = isNative;
-  const showGlobalMessage = !isNative && !isIndia();
+  // Native app (iOS/Android): RevenueCat IAP
+  // Web browser: Razorpay (India) or coming soon (international)
+  const showRevenueCat = isMobileApp;
+  const showRazorpay = !isMobileApp && isIndia();
+  const showGlobalMessage = !isMobileApp && !isIndia();
 
   return (
     <div className="px-5 pt-8 pb-10 max-w-sm mx-auto">
@@ -102,10 +104,10 @@ export default function SubscribePage() {
 
         {/* Platform indicator */}
         <div className="flex items-center justify-center gap-1.5 mt-3">
-          {isNative ? (
+          {isMobileApp ? (
             <Badge variant="outline" className="text-xs gap-1">
               <Smartphone className="w-3 h-3" />
-              {platform === 'ios' ? 'iOS App' : 'Android App'} — App Store Payment
+              {platform === 'ios' ? 'iOS App' : 'Android App'} — In-App Purchase
             </Badge>
           ) : (
             <Badge variant="outline" className="text-xs gap-1">
@@ -131,11 +133,11 @@ export default function SubscribePage() {
 
         {/* Price display */}
         <div className="text-center mb-5">
-          {isNative ? (
+          {isMobileApp ? (
             <>
               <p className="text-5xl font-heading font-bold text-primary">$6.99</p>
               <p className="text-sm text-muted-foreground mt-1">One-time · Lifetime access</p>
-              <p className="text-xs text-muted-foreground">Via {platform === 'ios' ? 'Apple' : 'Google'} Play Store</p>
+              <p className="text-xs text-muted-foreground">Via {platform === 'ios' ? 'Apple App Store' : 'Google Play'} In-App Purchase</p>
             </>
           ) : isIndia() ? (
             <>
