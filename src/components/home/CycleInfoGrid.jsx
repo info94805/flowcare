@@ -1,6 +1,6 @@
 import React from 'react';
 import { format, addDays, parseISO } from 'date-fns';
-import { getFertileWindow, getOvulationDate } from '@/lib/cycleUtils';
+import { getFertileWindow } from '@/lib/cycleUtils';
 
 export default function CycleInfoGrid({ latestCycle, cycleLength, cycleLogs }) {
   if (!latestCycle) return null;

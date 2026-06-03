@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Bell, Plus, Trash2, BellRing, Droplets, Moon, Heart, Flower2, ArrowLeft } from 'lucide-react';
+import { Plus, Trash2, BellRing, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const DEFAULT_REMINDERS = [

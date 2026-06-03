@@ -13,7 +13,6 @@ import WhatsAppAlertCard from '@/components/home/WhatsAppAlertCard';
 import { calculateCycleDay, daysUntilNextPeriod, getAverageCycleLength } from '@/lib/cycleUtils';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { Copyright } from 'lucide-react';
 
 export default function Home() {
   const [user, setUser] = useState(null);

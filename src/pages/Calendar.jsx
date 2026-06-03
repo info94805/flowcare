@@ -7,9 +7,9 @@ import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import {
   format, startOfMonth, endOfMonth, startOfWeek, endOfWeek,
-  addDays, addMonths, subMonths, isSameMonth, isSameDay, parseISO, isWithinInterval
+  addDays, addMonths, subMonths, isSameMonth, isSameDay, isWithinInterval
 } from 'date-fns';
-import { getAverageCycleLength, isOnPeriod, getFertileWindow, getOvulationDate, getCyclePhase } from '@/lib/cycleUtils';
+import { getAverageCycleLength, isOnPeriod, getFertileWindow, getOvulationDate } from '@/lib/cycleUtils';
 import { DAILY_TIPS } from '@/lib/articles';
 
 const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];

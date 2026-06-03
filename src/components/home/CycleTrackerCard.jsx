@@ -1,6 +1,6 @@
 import React from 'react';
 import { format, addDays, parseISO } from 'date-fns';
-import { getCyclePhase, getPhaseInfo } from '@/lib/cycleUtils';
+import { getCyclePhase } from '@/lib/cycleUtils';
 
 const PHASES = [
   { key: 'menstrual', label: 'Period', dayStart: 1, dayEnd: 5, emoji: '🌺' },

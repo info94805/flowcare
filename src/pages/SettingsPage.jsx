@@ -14,7 +14,6 @@ import {
   ChevronRight, Crown, Bell, ArrowLeft
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import WhatsAppModal from '@/components/settings/WhatsAppModal';
 
 export default function SettingsPage() {
