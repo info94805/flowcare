@@ -45,6 +45,22 @@
       ],
       "default": "free"
     },
+    "subscription_type": {
+      "type": "string",
+      "description": "Subscription plan type, e.g. lifetime"
+    },
+    "subscription_platform": {
+      "type": "string",
+      "description": "Where the purchase was made: razorpay, android, or ios"
+    },
+    "subscription_payment_id": {
+      "type": "string",
+      "description": "Payment/transaction identifier from the provider"
+    },
+    "subscription_date": {
+      "type": "string",
+      "description": "ISO timestamp of when the subscription was activated"
+    },
     "subscription_country": {
       "type": "string"
     },
