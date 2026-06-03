@@ -39,7 +39,15 @@ Deno.serve(async (req) => {
       const signatureBuffer = await crypto.subtle.sign('HMAC', cryptoKey, msgData);
       const expectedSignature = Array.from(new Uint8Array(signatureBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
 
-      if (expectedSignature !== signature) {
+      // Constant-time comparison to avoid leaking the signature via timing.
+      const timingSafeEqual = (a: string, b: string) => {
+        if (a.length !== b.length) return false;
+        let diff = 0;
+        for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+        return diff === 0;
+      };
+
+      if (!signature || !timingSafeEqual(expectedSignature, signature)) {
         return Response.json({ error: 'Payment verification failed' }, { status: 400 });
       }
 

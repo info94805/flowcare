@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion } from 'framer-motion';
@@ -49,12 +49,19 @@ export default function RemindersPage() {
     queryFn: () => base44.entities.Reminder.list(),
   });
 
+  const seedingDefaults = useRef(false);
+
   const setupDefaults = async () => {
-    if (reminders.length === 0 && !isLoading) {
+    // Guard against double-seeding (StrictMode re-invoke or a transient empty refetch).
+    if (seedingDefaults.current || isLoading || reminders.length > 0) return;
+    seedingDefaults.current = true;
+    try {
       for (const r of DEFAULT_REMINDERS) {
         await base44.entities.Reminder.create({ ...r, is_active: true });
       }
       queryClient.invalidateQueries({ queryKey: ['reminders'] });
+    } finally {
+      seedingDefaults.current = false;
     }
   };
 

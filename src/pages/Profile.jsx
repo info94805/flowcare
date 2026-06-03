@@ -228,9 +228,10 @@ function LogPeriodForm({ onLogged, user }) {
     if (numbers.length > 0) {
       try {
         const res = await base44.functions.invoke('sendWhatsAppAlert', { numbers });
-        if (res.data?.links?.length > 0) {
-          // Open WhatsApp link for first number
-          window.open(res.data.links[0].link, '_blank');
+        const links = res.data?.links || [];
+        if (links.length > 0) {
+          // Open a WhatsApp message for every configured contact, not just the first.
+          links.forEach(({ link }) => window.open(link, '_blank'));
           setWhatsappSent(true);
           setTimeout(() => setWhatsappSent(false), 4000);
         }

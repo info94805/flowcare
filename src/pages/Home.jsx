@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import { format } from 'date-fns';
 import SplashScreen from '@/components/SplashScreen';
@@ -16,7 +16,6 @@ import { Link } from 'react-router-dom';
 
 export default function Home() {
   const [user, setUser] = useState(null);
-  const queryClient = useQueryClient();
   const [showSplash, setShowSplash] = useState(() => {
     const seen = localStorage.getItem('flowcare_splash_seen');
     return !seen;
@@ -25,11 +24,6 @@ export default function Home() {
   const handleSplashDone = () => {
     localStorage.setItem('flowcare_splash_seen', '1');
     setShowSplash(false);
-  };
-
-  const resetSplash = () => {
-    localStorage.removeItem('flowcare_splash_seen');
-    setShowSplash(true);
   };
 
   useEffect(() => {

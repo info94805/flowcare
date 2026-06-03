@@ -22,7 +22,6 @@ export default function SettingsPage() {
   const [user, setUser] = useState(null);
   const [appMode, setAppMode] = useState('daily');
   const [showWhatsApp, setShowWhatsApp] = useState(false);
-  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     base44.auth.me().then(u => {

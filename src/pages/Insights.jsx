@@ -7,7 +7,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, L
 import { getAverageCycleLength } from '@/lib/cycleUtils';
 import { MOODS, SYMPTOMS_LIST } from '@/lib/cycleUtils';
 import { TrendingUp, Droplets, Heart, Moon, Zap, Sparkles, ArrowRight } from 'lucide-react';
-import { format, parseISO, subDays } from 'date-fns';
+import { format, parseISO, subDays, differenceInDays } from 'date-fns';
 import { Link } from 'react-router-dom';
 
 const COLORS = ['#FF85A2', '#C9A0DC', '#FFB3C6', '#85D1FF', '#B5EAD7'];
@@ -78,8 +78,23 @@ export default function Insights() {
   const avgWater = dailyLogs.filter(l => l.water_intake).reduce((a, b) => a + (b.water_intake || 0), 0) / Math.max(1, dailyLogs.filter(l => l.water_intake).length);
   const avgSleep = dailyLogs.filter(l => l.sleep_hours).reduce((a, b) => a + (b.sleep_hours || 0), 0) / Math.max(1, dailyLogs.filter(l => l.sleep_hours).length);
 
+  // Cycle regularity from the variability of real cycle lengths (lower spread = more regular).
+  const cycleRegularity = useMemo(() => {
+    const sorted = [...cycleLogs].sort((a, b) => new Date(a.start_date) - new Date(b.start_date));
+    const gaps = [];
+    for (let i = 1; i < sorted.length; i++) {
+      const d = differenceInDays(parseISO(sorted[i].start_date), parseISO(sorted[i - 1].start_date));
+      if (d > 15 && d < 60) gaps.push(d);
+    }
+    if (gaps.length < 2) return null; // not enough data to judge
+    const mean = gaps.reduce((a, b) => a + b, 0) / gaps.length;
+    const std = Math.sqrt(gaps.reduce((a, b) => a + (b - mean) ** 2, 0) / gaps.length);
+    return Math.max(0, Math.min(100, Math.round(100 - std * 12)));
+  }, [cycleLogs]);
+
   const radialData = [
-    { name: 'Cycle Reg.', value: 85, fill: '#FF85A2' },
+    // Only show regularity once it can be computed from real data.
+    ...(cycleRegularity !== null ? [{ name: 'Cycle Reg.', value: cycleRegularity, fill: '#FF85A2' }] : []),
     { name: 'Logging', value: Math.min(100, totalDaysLogged * 3), fill: '#C9A0DC' },
     { name: 'Hydration', value: Math.min(100, (avgWater / 8) * 100), fill: '#85D1FF' },
   ];

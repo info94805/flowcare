@@ -19,8 +19,8 @@ export function predictNextPeriod(lastPeriodStart, cycleLength = DEFAULT_CYCLE_L
 export function daysUntilNextPeriod(lastPeriodStart, cycleLength = DEFAULT_CYCLE_LENGTH, today = new Date()) {
   const next = predictNextPeriod(lastPeriodStart, cycleLength);
   if (!next) return null;
-  const diff = differenceInDays(startOfDay(next), startOfDay(today));
-  return Math.max(0, diff);
+  // Signed: positive = days remaining, 0 = today, negative = days overdue.
+  return differenceInDays(startOfDay(next), startOfDay(today));
 }
 
 export function getOvulationDate(lastPeriodStart, cycleLength = DEFAULT_CYCLE_LENGTH) {
@@ -49,12 +49,15 @@ export function isOnPeriod(date, lastPeriodStart, periodLength = DEFAULT_PERIOD_
   return dayInCycle < periodLength;
 }
 
-export function getCyclePhase(cycleDay, cycleLength = DEFAULT_CYCLE_LENGTH) {
-  if (!cycleDay) return 'unknown';
+export function getCyclePhase(cycleDay, cycleLength = DEFAULT_CYCLE_LENGTH, periodLength = DEFAULT_PERIOD_LENGTH) {
+  if (!cycleDay || cycleDay < 1) return 'unknown';
+  // Luteal phase is ~14 days, so ovulation tracks the cycle length rather than
+  // assuming a fixed 28-day cycle. Menstrual length follows the user's period.
   const ovulationDay = cycleLength - 14;
-  
-  if (cycleDay <= 5) return 'menstrual';
-  if (cycleDay <= ovulationDay - 5) return 'follicular';
+  const menstrualEnd = Math.min(periodLength, cycleLength);
+
+  if (cycleDay <= menstrualEnd) return 'menstrual';
+  if (cycleDay < ovulationDay - 1) return 'follicular';
   if (cycleDay <= ovulationDay + 1) return 'ovulation';
   return 'luteal';
 }
