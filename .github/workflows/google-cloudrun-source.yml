@@ -1,43 +1,27 @@
-# This workflow will deploy source code on Cloud Run when a commit is pushed to
-# the "main" branch.
+# Builds the Vite app into a container and deploys it to Cloud Run on every
+# push to main.
 #
-# To configure this workflow:
-#
-# 1. Enable the following Google Cloud APIs:
-#
-#    - Artifact Registry (artifactregistry.googleapis.com)
-#    - Cloud Build (cloudbuild.googleapis.com)
-#    - Cloud Run (run.googleapis.com)
-#    - IAM Credentials API (iamcredentials.googleapis.com)
-#
-#    You can learn more about enabling APIs at
-#    https://support.google.com/googleapi/answer/6158841.
-#
-# 2. Create and configure a Workload Identity Provider for GitHub:
-#    https://github.com/google-github-actions/auth#preferred-direct-workload-identity-federation.
-#
-#    Depending on how you authenticate, you will need to grant an IAM principal
-#    permissions on Google Cloud:
-#
-#    - Artifact Registry Administrator (roles/artifactregistry.admin)
-#    - Cloud Run Source Developer (roles/run.sourceDeveloper)
-#
-#    You can learn more about setting IAM permissions at
-#    https://cloud.google.com/iam/docs/manage-access-other-resources.
-#
-# 3. Change the values in the "env" block to match your values.
+# One-time setup (see DEPLOY.md for full details):
+#  1. Enable APIs: run, cloudbuild, artifactregistry, iamcredentials.
+#  2. Create an Artifact Registry Docker repo (name must match REPOSITORY below).
+#  3. Configure Workload Identity Federation for this GitHub repo + a service
+#     account with roles: run.admin, artifactregistry.writer, iam.serviceAccountUser.
+#  4. Add the repository secrets listed below.
+#  5. Update the PROJECT_ID / REGION / SERVICE / REPOSITORY values.
 
-name: 'Deploy to Cloud Run from Source'
+name: 'Deploy to Cloud Run'
 
 on:
   push:
     branches:
-      - '"main"'
+      - main
+  workflow_dispatch:
 
 env:
-  PROJECT_ID: 'my-project' # TODO: update to your Google Cloud project ID
-  REGION: 'us-central1' # TODO: update to your region
-  SERVICE: 'my-service' # TODO: update to your service name
+  PROJECT_ID: 'my-project'        # TODO: your Google Cloud project ID
+  REGION: 'us-central1'           # TODO: your region
+  SERVICE: 'flowcare'             # TODO: your Cloud Run service name
+  REPOSITORY: 'flowcare'          # TODO: your Artifact Registry repo name
 
 jobs:
   deploy:
@@ -49,27 +33,39 @@ jobs:
 
     steps:
       - name: 'Checkout'
-        uses: 'actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332' # actions/checkout@v4
+        uses: 'actions/checkout@v4'
 
-      # Configure Workload Identity Federation and generate an access token.
-      #
-      # See https://github.com/google-github-actions/auth for more options,
-      # including authenticating via a JSON credentials file.
-      - id: 'auth'
-        name: 'Authenticate to Google Cloud'
-        uses: 'google-github-actions/auth@f112390a2df9932162083945e46d439060d66ec2' # google-github-actions/auth@v2
+      - name: 'Authenticate to Google Cloud'
+        id: 'auth'
+        uses: 'google-github-actions/auth@v2'
         with:
-          workload_identity_provider: 'projects/123456789/locations/global/workloadIdentityPools/my-pool/providers/my-provider' # TODO: replace with your workload identity provider
+          workload_identity_provider: '${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}'
+          service_account: '${{ secrets.GCP_SERVICE_ACCOUNT }}'
+
+      - name: 'Set up gcloud'
+        uses: 'google-github-actions/setup-gcloud@v2'
+
+      - name: 'Configure Docker for Artifact Registry'
+        run: 'gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet'
+
+      - name: 'Build and push image'
+        run: |-
+          IMAGE="${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE }}:${{ github.sha }}"
+          docker build \
+            --build-arg VITE_BASE44_APP_ID="${{ secrets.VITE_BASE44_APP_ID }}" \
+            --build-arg VITE_BASE44_APP_BASE_URL="${{ secrets.VITE_BASE44_APP_BASE_URL }}" \
+            -t "$IMAGE" .
+          docker push "$IMAGE"
+          echo "IMAGE=$IMAGE" >> "$GITHUB_ENV"
 
       - name: 'Deploy to Cloud Run'
-        uses: 'google-github-actions/deploy-cloudrun@33553064113a37d688aa6937bacbdc481580be17' # google-github-actions/deploy-cloudrun@v2
+        id: 'deploy'
+        uses: 'google-github-actions/deploy-cloudrun@v2'
         with:
           service: '${{ env.SERVICE }}'
           region: '${{ env.REGION }}'
-          # NOTE: If using a different source folder, update the image name below:
-          source: './'
+          image: '${{ env.IMAGE }}'
+          flags: '--allow-unauthenticated'
 
-      # If required, use the Cloud Run URL output in later steps
-      - name: 'Show output'
-        run: |-
-          echo ${{ steps.deploy.outputs.url }}
+      - name: 'Show URL'
+        run: 'echo "Deployed to ${{ steps.deploy.outputs.url }}"'
