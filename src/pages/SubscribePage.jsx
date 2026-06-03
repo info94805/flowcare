@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { base44 } from '@/api/base44Client';
 import { Check, Crown, Shield, AlertCircle, Smartphone, Globe } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { getPlatform } from '@/lib/platform';
+import { getPlatform, isNative } from '@/lib/platform';
 import RazorpayPayment from '@/components/subscribe/RazorpayPayment';
 import RevenueCatPayment from '@/components/subscribe/RevenueCatPayment';
 
@@ -79,8 +79,9 @@ export default function SubscribePage() {
     );
   }
 
-  // iOS/Android user agent = native app shell with IAP support
-  const isMobileApp = platform === 'ios' || platform === 'android';
+  // Native app shell (React Native WebView) = IAP support. A plain mobile
+  // browser is NOT the app, so it must fall through to the web payment flow.
+  const isMobileApp = isNative() && (platform === 'ios' || platform === 'android');
   const isIndia = () => {
     const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
     return tz.includes('Kolkata') || tz.includes('Calcutta');
