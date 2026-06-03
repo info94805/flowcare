@@ -4,7 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { motion } from 'framer-motion';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { FileText, Download, Sparkles, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
+import { Download, Sparkles, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 import { getAverageCycleLength, MOODS, SYMPTOMS_LIST } from '@/lib/cycleUtils';
 import { format, parseISO } from 'date-fns';
 import { jsPDF } from 'jspdf';

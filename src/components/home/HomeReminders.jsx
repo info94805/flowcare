@@ -18,7 +18,6 @@ export default function HomeReminders() {
   };
 
   const padReminder = reminders.find(r => r.type === 'pad_change');
-  const activeCount = reminders.filter(r => r.is_active).length;
 
   return (
     <div>
@@ -38,7 +37,9 @@ export default function HomeReminders() {
             <div className="flex-1 min-w-0">
               <p className="font-heading font-bold text-sm text-foreground">Pad Reminders</p>
               <p className="text-[11px] text-muted-foreground">
-                {activeCount} daily reminder{activeCount !== 1 ? 's' : ''} active
+                {padReminder.is_active
+                  ? `Active · ${Math.abs(padReminder.days_offset || 4)} days before period`
+                  : 'Turned off'}
               </p>
             </div>
             <Switch

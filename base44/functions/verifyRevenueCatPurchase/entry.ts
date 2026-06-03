@@ -52,12 +52,16 @@ Deno.serve(async (req) => {
     const hasPurchase = Object.keys(nonSubscriptions).length > 0 || hasActiveEntitlement;
 
     if (hasPurchase || hasActiveEntitlement) {
-      // Update user subscription status
+      // Update user subscription status. Pass through fields the User schema
+      // may still mark as required so the update can't fail validation.
       await base44.auth.updateMe({
         subscription_status: 'active',
         subscription_type: 'lifetime',
         subscription_platform: platform,
         subscription_date: new Date().toISOString(),
+        avatar_url: user.avatar_url || '',
+        subscription_country: user.subscription_country || '',
+        whatsapp_family: user.whatsapp_family || [],
       });
 
       return Response.json({ success: true, status: 'active' });

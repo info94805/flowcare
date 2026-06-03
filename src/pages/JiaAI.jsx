@@ -62,9 +62,17 @@ export default function JiaAI() {
     const history = messages.map(m => `${m.role === 'user' ? 'User' : 'Jia'}: ${m.content}`).join('\n');
     const prompt = `${JIA_SYSTEM}\n\nConversation history:\n${history}\n\nUser: ${userMsg}\n\nJia:`;
 
-    const response = await base44.integrations.Core.InvokeLLM({ prompt });
-    setMessages(prev => [...prev, { role: 'assistant', content: response }]);
-    setLoading(false);
+    try {
+      const response = await base44.integrations.Core.InvokeLLM({ prompt });
+      setMessages(prev => [...prev, { role: 'assistant', content: response }]);
+    } catch (err) {
+      setMessages(prev => [...prev, {
+        role: 'assistant',
+        content: "Sorry, I couldn't respond just now 🌸 Please check your connection and try again in a moment.",
+      }]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const clearChat = () => {

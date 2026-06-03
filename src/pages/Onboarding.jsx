@@ -39,8 +39,18 @@ export default function Onboarding() {
     if (!lastPeriodDate) return;
     setSaving(true);
     await base44.entities.CycleLog.create({ start_date: lastPeriodDate, cycle_length: cycleLength, period_length: periodLength });
-    const updateData = { cycle_length: cycleLength, period_length: periodLength, onboarded: true };
-    if (avatarUrl) updateData.avatar_url = avatarUrl;
+    // Include fields the User schema may still mark as required (avatar_url,
+    // subscription_country, whatsapp_family) with safe defaults so onboarding
+    // can't fail validation — e.g. when the photo step was skipped.
+    const me = await base44.auth.me().catch(() => null);
+    const updateData = {
+      cycle_length: cycleLength,
+      period_length: periodLength,
+      onboarded: true,
+      avatar_url: avatarUrl || me?.avatar_url || '',
+      subscription_country: me?.subscription_country || '',
+      whatsapp_family: me?.whatsapp_family || [],
+    };
     await base44.auth.updateMe(updateData);
     // Send welcome email (fire and forget — don't block navigation)
     base44.functions.invoke('sendWelcomeEmail', {}).catch(() => {});
