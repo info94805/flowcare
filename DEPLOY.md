@@ -8,8 +8,8 @@ Cloud Run on every push to `main` (`.github/workflows/google-cloudrun-source.yml
 Set your project and region:
 
 ```bash
-export PROJECT_ID="your-project-id"
-export REGION="us-central1"
+export PROJECT_ID="flowcare-492805"
+export REGION="asia-south1"          # Mumbai, India
 export REPOSITORY="flowcare"
 export SERVICE="flowcare"
 gcloud config set project "$PROJECT_ID"

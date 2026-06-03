@@ -18,9 +18,9 @@ on:
   workflow_dispatch:
 
 env:
-  PROJECT_ID: 'my-project'        # TODO: your Google Cloud project ID
-  REGION: 'us-central1'           # TODO: your region
-  SERVICE: 'flowcare'             # TODO: your Cloud Run service name
+  PROJECT_ID: 'flowcare-492805'   # Google Cloud project ID
+  REGION: 'asia-south1'           # Mumbai, India
+  SERVICE: 'flowcare'             # Cloud Run service name
   REPOSITORY: 'flowcare'          # TODO: your Artifact Registry repo name
 
 jobs:
