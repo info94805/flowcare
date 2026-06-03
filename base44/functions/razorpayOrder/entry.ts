@@ -43,13 +43,17 @@ Deno.serve(async (req) => {
         return Response.json({ error: 'Payment verification failed' }, { status: 400 });
       }
 
-      // Mark user as premium
+      // Mark user as premium. Pass through fields the User schema may still
+      // mark as required so the update can't fail validation.
       await base44.auth.updateMe({
         subscription_status: 'active',
         subscription_type: 'lifetime',
         subscription_platform: 'razorpay',
         subscription_payment_id: paymentId,
         subscription_date: new Date().toISOString(),
+        avatar_url: user.avatar_url || '',
+        subscription_country: user.subscription_country || 'IN',
+        whatsapp_family: user.whatsapp_family || [],
       });
 
       return Response.json({ success: true, message: 'Payment verified. Welcome to FlowCare Premium!' });

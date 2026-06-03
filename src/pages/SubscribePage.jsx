@@ -51,6 +51,11 @@ export default function SubscribePage() {
         subscription_type: 'lifetime',
         subscription_platform: platform,
         subscription_date: new Date().toISOString(),
+        // Pass through fields the User schema may still require so the
+        // premium-unlock update can't fail validation.
+        avatar_url: user?.avatar_url || '',
+        subscription_country: user?.subscription_country || '',
+        whatsapp_family: user?.whatsapp_family || [],
       });
     }
     setSuccess(true);
